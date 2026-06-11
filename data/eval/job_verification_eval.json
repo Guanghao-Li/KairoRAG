@@ -1,0 +1,37 @@
+[
+  {
+    "id": "ver_001",
+    "job_id": "job_001",
+    "expected_status": "active",
+    "expected_needs_reindex": false,
+    "expected_evidence_domain": "mock"
+  },
+  {
+    "id": "ver_002",
+    "job_id": "job_003",
+    "expected_status": "closed",
+    "expected_needs_reindex": false,
+    "expected_evidence_domain": "mock"
+  },
+  {
+    "id": "ver_003",
+    "job_id": "job_005",
+    "expected_status": "stale",
+    "expected_needs_reindex": true,
+    "expected_evidence_domain": "mock"
+  },
+  {
+    "id": "ver_004",
+    "job_id": "job_008",
+    "expected_status": "updated",
+    "expected_needs_reindex": true,
+    "expected_evidence_domain": "mock"
+  },
+  {
+    "id": "ver_005",
+    "job_id": "job_006",
+    "expected_status": "duplicate",
+    "expected_needs_reindex": true,
+    "expected_evidence_domain": "mock"
+  }
+]

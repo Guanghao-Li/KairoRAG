@@ -1,0 +1,78 @@
+{
+  "overall_metrics": {
+    "verification_accuracy": 1.0,
+    "active_precision": 1.0,
+    "closed_recall": 1.0,
+    "stale_rate": 0.2,
+    "update_correctness": 1.0,
+    "evidence_domain_match": 1.0,
+    "reindex_trigger_accuracy": 1.0
+  },
+  "cases": [
+    {
+      "id": "ver_001",
+      "job_id": "job_001",
+      "prediction": "active",
+      "metrics": {
+        "confidence": 0.94,
+        "needs_reindex": false
+      },
+      "retrieval_path": [
+        "parse_job_page",
+        "original_url"
+      ]
+    },
+    {
+      "id": "ver_002",
+      "job_id": "job_003",
+      "prediction": "closed",
+      "metrics": {
+        "confidence": 0.93,
+        "needs_reindex": false
+      },
+      "retrieval_path": [
+        "parse_job_page",
+        "original_url"
+      ]
+    },
+    {
+      "id": "ver_003",
+      "job_id": "job_005",
+      "prediction": "stale",
+      "metrics": {
+        "confidence": 0.25,
+        "needs_reindex": true
+      },
+      "retrieval_path": [
+        "parse_job_page",
+        "search_web"
+      ]
+    },
+    {
+      "id": "ver_004",
+      "job_id": "job_008",
+      "prediction": "updated",
+      "metrics": {
+        "confidence": 0.9,
+        "needs_reindex": true
+      },
+      "retrieval_path": [
+        "parse_job_page",
+        "search_web"
+      ]
+    },
+    {
+      "id": "ver_005",
+      "job_id": "job_006",
+      "prediction": "duplicate",
+      "metrics": {
+        "confidence": 0.88,
+        "needs_reindex": true
+      },
+      "retrieval_path": [
+        "parse_job_page",
+        "original_url"
+      ]
+    }
+  ]
+}

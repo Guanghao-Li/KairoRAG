@@ -1,0 +1,435 @@
+[
+  {
+    "doc_id": "job_001",
+    "source_type": "job",
+    "title": "Northstar AI - AI Agent RAG Engineer",
+    "text": "Company: Northstar AI\nTitle: AI Agent RAG Engineer\nLocation: Remote US\nStatus: active\nRequired skills: Python, RAG, LangGraph, Vector Search, Evaluation\nPreferred skills: MCP, OpenAI API, FastAPI\nAgent keywords: agentic rag, multi agent, chunk citation\nJob URL: mock://jobs/job_001_active\n\n负责为企业知识库构建 agentic RAG workflow。岗位要求 Python、向量检索、LangGraph、retrieval evaluation、chunk 级 citation 和多 Agent 编排能力。\n\nSkill summary: Python, RAG, LangGraph, Vector Search, Evaluation, MCP, OpenAI API, FastAPI",
+    "metadata": {
+      "job_id": "job_001",
+      "company": "Northstar AI",
+      "title": "AI Agent RAG Engineer",
+      "location": "Remote US",
+      "jd_text": "负责为企业知识库构建 agentic RAG workflow。岗位要求 Python、向量检索、LangGraph、retrieval evaluation、chunk 级 citation 和多 Agent 编排能力。",
+      "required_skills": [
+        "Python",
+        "RAG",
+        "LangGraph",
+        "Vector Search",
+        "Evaluation"
+      ],
+      "preferred_skills": [
+        "MCP",
+        "OpenAI API",
+        "FastAPI"
+      ],
+      "agent_related_keywords": [
+        "agentic rag",
+        "multi agent",
+        "chunk citation"
+      ],
+      "job_url": "mock://jobs/job_001_active",
+      "source_platform": "company_careers",
+      "first_seen_at": "2026-05-01T00:00:00Z",
+      "last_verified_at": "2026-06-09T00:00:00Z",
+      "verification_status": "active",
+      "verification_confidence": 0.94,
+      "evidence_urls": [
+        "mock://jobs/job_001_active"
+      ],
+      "evidence_snippets": [
+        "公司 careers 页面显示“Apply now”。"
+      ],
+      "closed_reason": "",
+      "archived_at": "",
+      "content_hash": "9c011d8a19ec0d89",
+      "duplicate_of": "",
+      "priority": 1,
+      "active_for_retrieval": true
+    }
+  },
+  {
+    "doc_id": "job_002",
+    "source_type": "job",
+    "title": "HelioData - LLM Knowledge Base Intern",
+    "text": "Company: HelioData\nTitle: LLM Knowledge Base Intern\nLocation: New York NY\nStatus: active\nRequired skills: Python, Information Retrieval, RAG, SQL\nPreferred skills: LangChain, BM25, Evaluation\nAgent keywords: knowledge base, hybrid retrieval, rag eval\nJob URL: mock://jobs/job_002_active\n\n支持内部知识库问答、文档切分、hybrid retrieval、prompt evaluation，以及面向客服场景的无 UI 后端实验。\n\nSkill summary: Python, Information Retrieval, RAG, SQL, LangChain, BM25, Evaluation",
+    "metadata": {
+      "job_id": "job_002",
+      "company": "HelioData",
+      "title": "LLM Knowledge Base Intern",
+      "location": "New York NY",
+      "jd_text": "支持内部知识库问答、文档切分、hybrid retrieval、prompt evaluation，以及面向客服场景的无 UI 后端实验。",
+      "required_skills": [
+        "Python",
+        "Information Retrieval",
+        "RAG",
+        "SQL"
+      ],
+      "preferred_skills": [
+        "LangChain",
+        "BM25",
+        "Evaluation"
+      ],
+      "agent_related_keywords": [
+        "knowledge base",
+        "hybrid retrieval",
+        "rag eval"
+      ],
+      "job_url": "mock://jobs/job_002_active",
+      "source_platform": "company_careers",
+      "first_seen_at": "2026-05-03T00:00:00Z",
+      "last_verified_at": "2026-06-08T00:00:00Z",
+      "verification_status": "active",
+      "verification_confidence": 0.91,
+      "evidence_urls": [
+        "mock://jobs/job_002_active"
+      ],
+      "evidence_snippets": [
+        "页面可见“Submit application”。"
+      ],
+      "closed_reason": "",
+      "archived_at": "",
+      "content_hash": "8ce708c9d1dd2910",
+      "duplicate_of": "",
+      "priority": 2,
+      "active_for_retrieval": true
+    }
+  },
+  {
+    "doc_id": "job_003",
+    "source_type": "job",
+    "title": "VectorWorks Labs - Agentic Retrieval Research Assistant",
+    "text": "Company: VectorWorks Labs\nTitle: Agentic Retrieval Research Assistant\nLocation: Boston MA\nStatus: closed\nRequired skills: Python, Embeddings, Reranking, Context Budget\nPreferred skills: GraphRAG, Evaluation\nAgent keywords: keyword search, semantic search, chunk_read\nJob URL: mock://jobs/job_003_closed\n\n负责原型化 keyword search、semantic search、chunk_read 工具、reranking，以及面向长上下文问答任务的 context budget 控制。\n\nSkill summary: Python, Embeddings, Reranking, Context Budget, GraphRAG, Evaluation",
+    "metadata": {
+      "job_id": "job_003",
+      "company": "VectorWorks Labs",
+      "title": "Agentic Retrieval Research Assistant",
+      "location": "Boston MA",
+      "jd_text": "负责原型化 keyword search、semantic search、chunk_read 工具、reranking，以及面向长上下文问答任务的 context budget 控制。",
+      "required_skills": [
+        "Python",
+        "Embeddings",
+        "Reranking",
+        "Context Budget"
+      ],
+      "preferred_skills": [
+        "GraphRAG",
+        "Evaluation"
+      ],
+      "agent_related_keywords": [
+        "keyword search",
+        "semantic search",
+        "chunk_read"
+      ],
+      "job_url": "mock://jobs/job_003_closed",
+      "source_platform": "third_party",
+      "first_seen_at": "2026-04-10T00:00:00Z",
+      "last_verified_at": "2026-05-20T00:00:00Z",
+      "verification_status": "closed",
+      "verification_confidence": 0.93,
+      "evidence_urls": [
+        "mock://jobs/job_003_closed"
+      ],
+      "evidence_snippets": [
+        "页面显示“This job is no longer available”。"
+      ],
+      "closed_reason": "position filled",
+      "archived_at": "2026-05-20T00:00:00Z",
+      "content_hash": "6a5321d441da9a34",
+      "duplicate_of": "",
+      "priority": 5,
+      "active_for_retrieval": false
+    }
+  },
+  {
+    "doc_id": "job_004",
+    "source_type": "job",
+    "title": "Atlas Robotics - Multi-Agent Platform Engineer",
+    "text": "Company: Atlas Robotics\nTitle: Multi-Agent Platform Engineer\nLocation: San Francisco CA\nStatus: stale\nRequired skills: Python, Tool Calling, Multi-Agent, MCP\nPreferred skills: RAG, LangGraph, Observability\nAgent keywords: tool calling, multi agent, mcp\nJob URL: mock://jobs/job_004_stale\n\n开发 Agent 工具、workflow orchestration、tool registry、长期记忆适配层，以及面向机器人运营场景的检索集成能力。\n\nSkill summary: Python, Tool Calling, Multi-Agent, MCP, RAG, LangGraph, Observability",
+    "metadata": {
+      "job_id": "job_004",
+      "company": "Atlas Robotics",
+      "title": "Multi-Agent Platform Engineer",
+      "location": "San Francisco CA",
+      "jd_text": "开发 Agent 工具、workflow orchestration、tool registry、长期记忆适配层，以及面向机器人运营场景的检索集成能力。",
+      "required_skills": [
+        "Python",
+        "Tool Calling",
+        "Multi-Agent",
+        "MCP"
+      ],
+      "preferred_skills": [
+        "RAG",
+        "LangGraph",
+        "Observability"
+      ],
+      "agent_related_keywords": [
+        "tool calling",
+        "multi agent",
+        "mcp"
+      ],
+      "job_url": "mock://jobs/job_004_stale",
+      "source_platform": "company_careers",
+      "first_seen_at": "2026-05-15T00:00:00Z",
+      "last_verified_at": "2026-05-21T00:00:00Z",
+      "verification_status": "stale",
+      "verification_confidence": 0.28,
+      "evidence_urls": [
+        "mock://jobs/job_004_stale"
+      ],
+      "evidence_snippets": [
+        "目前无法确认岗位状态。"
+      ],
+      "closed_reason": "evidence stale",
+      "archived_at": "",
+      "content_hash": "cd66587d952e57c4",
+      "duplicate_of": "",
+      "priority": 3,
+      "active_for_retrieval": true
+    }
+  },
+  {
+    "doc_id": "job_005",
+    "source_type": "job",
+    "title": "QuietCloud - Enterprise RAG Backend Engineer",
+    "text": "Company: QuietCloud\nTitle: Enterprise RAG Backend Engineer\nLocation: Seattle WA\nStatus: unknown\nRequired skills: Python, RAG, Hybrid Search, Chunking, Evaluation\nPreferred skills: OpenAI, Postgres, Search\nAgent keywords: enterprise rag, hybrid search, citations\nJob URL: mock://jobs/job_005_unknown\n\n负责企业文档的 indexing、chunking、keyword retrieval、semantic retrieval、hybrid search、evaluation 数据集，以及基于证据的回答生成。\n\nSkill summary: Python, RAG, Hybrid Search, Chunking, Evaluation, OpenAI, Postgres, Search",
+    "metadata": {
+      "job_id": "job_005",
+      "company": "QuietCloud",
+      "title": "Enterprise RAG Backend Engineer",
+      "location": "Seattle WA",
+      "jd_text": "负责企业文档的 indexing、chunking、keyword retrieval、semantic retrieval、hybrid search、evaluation 数据集，以及基于证据的回答生成。",
+      "required_skills": [
+        "Python",
+        "RAG",
+        "Hybrid Search",
+        "Chunking",
+        "Evaluation"
+      ],
+      "preferred_skills": [
+        "OpenAI",
+        "Postgres",
+        "Search"
+      ],
+      "agent_related_keywords": [
+        "enterprise rag",
+        "hybrid search",
+        "citations"
+      ],
+      "job_url": "mock://jobs/job_005_unknown",
+      "source_platform": "company_careers",
+      "first_seen_at": "2026-05-22T00:00:00Z",
+      "last_verified_at": "",
+      "verification_status": "unknown",
+      "verification_confidence": 0.0,
+      "evidence_urls": [],
+      "evidence_snippets": [],
+      "closed_reason": "unknown",
+      "archived_at": "",
+      "content_hash": "0e0ea826347da7cd",
+      "duplicate_of": "",
+      "priority": 2,
+      "active_for_retrieval": true
+    }
+  },
+  {
+    "doc_id": "job_006",
+    "source_type": "job",
+    "title": "Northstar AI - AI Agent RAG Engineer",
+    "text": "Company: Northstar AI\nTitle: AI Agent RAG Engineer\nLocation: Remote US\nStatus: duplicate\nRequired skills: Python, RAG, LangGraph, Vector Search, Evaluation\nPreferred skills: MCP, OpenAI API\nAgent keywords: agentic rag, multi agent, duplicate\nJob URL: mock://jobs/job_001_active\n\n与主岗位重复发布的版本，内容同样强调 Python、向量检索、LangGraph、retrieval evaluation、citation 和多 Agent 编排能力。\n\nSkill summary: Python, RAG, LangGraph, Vector Search, Evaluation, MCP, OpenAI API",
+    "metadata": {
+      "job_id": "job_006",
+      "company": "Northstar AI",
+      "title": "AI Agent RAG Engineer",
+      "location": "Remote US",
+      "jd_text": "与主岗位重复发布的版本，内容同样强调 Python、向量检索、LangGraph、retrieval evaluation、citation 和多 Agent 编排能力。",
+      "required_skills": [
+        "Python",
+        "RAG",
+        "LangGraph",
+        "Vector Search",
+        "Evaluation"
+      ],
+      "preferred_skills": [
+        "MCP",
+        "OpenAI API"
+      ],
+      "agent_related_keywords": [
+        "agentic rag",
+        "multi agent",
+        "duplicate"
+      ],
+      "job_url": "mock://jobs/job_001_active",
+      "source_platform": "third_party",
+      "first_seen_at": "2026-05-02T00:00:00Z",
+      "last_verified_at": "2026-06-01T00:00:00Z",
+      "verification_status": "duplicate",
+      "verification_confidence": 0.88,
+      "evidence_urls": [
+        "mock://jobs/job_001_active"
+      ],
+      "evidence_snippets": [
+        "这是 company careers 主岗位的重复发布。"
+      ],
+      "closed_reason": "duplicate",
+      "archived_at": "",
+      "content_hash": "f1c4160a984d98a4",
+      "duplicate_of": "job_001",
+      "priority": 9,
+      "active_for_retrieval": false
+    }
+  },
+  {
+    "doc_id": "job_007",
+    "source_type": "job",
+    "title": "CivicFlow AI - RAG Evaluation Engineer",
+    "text": "Company: CivicFlow AI\nTitle: RAG Evaluation Engineer\nLocation: Washington DC\nStatus: active\nRequired skills: Python, RAG Evaluation, Metrics, Groundedness\nPreferred skills: pytest, Data Pipelines\nAgent keywords: rag evaluation, groundedness, evidence recall\nJob URL: mock://jobs/job_007_active\n\n为公共部门知识助手构建确定性 RAG evaluation，包括 groundedness、retrieval hit rate、evidence recall 和 skill extraction F1。\n\nSkill summary: Python, RAG Evaluation, Metrics, Groundedness, pytest, Data Pipelines",
+    "metadata": {
+      "job_id": "job_007",
+      "company": "CivicFlow AI",
+      "title": "RAG Evaluation Engineer",
+      "location": "Washington DC",
+      "jd_text": "为公共部门知识助手构建确定性 RAG evaluation，包括 groundedness、retrieval hit rate、evidence recall 和 skill extraction F1。",
+      "required_skills": [
+        "Python",
+        "RAG Evaluation",
+        "Metrics",
+        "Groundedness"
+      ],
+      "preferred_skills": [
+        "pytest",
+        "Data Pipelines"
+      ],
+      "agent_related_keywords": [
+        "rag evaluation",
+        "groundedness",
+        "evidence recall"
+      ],
+      "job_url": "mock://jobs/job_007_active",
+      "source_platform": "company_careers",
+      "first_seen_at": "2026-05-25T00:00:00Z",
+      "last_verified_at": "2026-06-10T00:00:00Z",
+      "verification_status": "active",
+      "verification_confidence": 0.96,
+      "evidence_urls": [
+        "mock://jobs/job_007_active"
+      ],
+      "evidence_snippets": [
+        "页面显示“Apply now”。"
+      ],
+      "closed_reason": "",
+      "archived_at": "",
+      "content_hash": "61e10134c9a8b098",
+      "duplicate_of": "",
+      "priority": 1,
+      "active_for_retrieval": true
+    }
+  },
+  {
+    "doc_id": "job_008",
+    "source_type": "job",
+    "title": "DeltaOps - AI Knowledge Maintenance Engineer",
+    "text": "Company: DeltaOps\nTitle: AI Knowledge Maintenance Engineer\nLocation: Austin TX\nStatus: unknown\nRequired skills: Python, Data Quality, RAG, Audit Logs\nPreferred skills: Web Parsing, Search APIs, Scheduling\nAgent keywords: freshness verification, soft archive, index refresh\nJob URL: mock://jobs/job_008_updated\n\n维护动态知识库、验证 stale 岗位记录、soft archive 已关闭内容、刷新受影响索引，并保留 audit log。\n\nSkill summary: Python, Data Quality, RAG, Audit Logs, Web Parsing, Search APIs, Scheduling",
+    "metadata": {
+      "job_id": "job_008",
+      "company": "DeltaOps",
+      "title": "AI Knowledge Maintenance Engineer",
+      "location": "Austin TX",
+      "jd_text": "维护动态知识库、验证 stale 岗位记录、soft archive 已关闭内容、刷新受影响索引，并保留 audit log。",
+      "required_skills": [
+        "Python",
+        "Data Quality",
+        "RAG",
+        "Audit Logs"
+      ],
+      "preferred_skills": [
+        "Web Parsing",
+        "Search APIs",
+        "Scheduling"
+      ],
+      "agent_related_keywords": [
+        "freshness verification",
+        "soft archive",
+        "index refresh"
+      ],
+      "job_url": "mock://jobs/job_008_updated",
+      "source_platform": "company_careers",
+      "first_seen_at": "2026-05-28T00:00:00Z",
+      "last_verified_at": "2026-06-02T00:00:00Z",
+      "verification_status": "unknown",
+      "verification_confidence": 0.0,
+      "evidence_urls": [],
+      "evidence_snippets": [],
+      "closed_reason": "unknown",
+      "archived_at": "",
+      "content_hash": "1e0f10ef2717715f",
+      "duplicate_of": "",
+      "priority": 2,
+      "active_for_retrieval": true
+    }
+  },
+  {
+    "doc_id": "resume",
+    "source_type": "resume",
+    "title": "Candidate Resume",
+    "text": "# 候选人简历\n\n## 个人简介\n\n偏后端的 AI 工程师，具有构建 Agent 系统、检索流水线和评测工具链的经验。熟悉 Python、tool calling、MCP 风格接口，以及 LLM 应用在真实工程中的约束条件。\n\n## 项目经历\n\n### akashic-agent\n\n构建个人 Agent 框架，支持 MCP/tool calling、插件注册、主动任务、长期记忆和上下文压缩。该项目展示了 Agent 编排、工具抽象以及持久化记忆工作流能力。\n\n### Retrieval Lab\n\n面向小型企业知识库实现文档切分、关键词检索、本地向量检索、reranking 和保留引用的回答生成。\n\n## 技能栈\n\n- Python、dataclasses、pytest\n- Agent 框架、tool registry、MCP 风格工具接口\n- RAG、hybrid retrieval、chunk-level citations\n- 评测指标、trace logging、context budget control\n",
+    "metadata": {
+      "path": "data\\raw\\resume.md",
+      "verification_status": "active"
+    }
+  },
+  {
+    "doc_id": "company_civicflow_ai",
+    "source_type": "company_doc",
+    "title": "Civicflow Ai",
+    "text": "# CivicFlow AI 公司资料\n\nCivicFlow AI 面向公共部门构建知识助手，要求所有输出都必须具备 citations 和 evaluation。公司会在每次发布时持续跟踪 retrieval hit rate、evidence recall、groundedness 和 latency。\n",
+    "metadata": {
+      "path": "data\\raw\\company_docs\\civicflow_ai.md",
+      "verification_status": "active",
+      "source_file": "civicflow_ai.md"
+    }
+  },
+  {
+    "doc_id": "company_northstar_ai",
+    "source_type": "company_doc",
+    "title": "Northstar Ai",
+    "text": "# Northstar AI 公司资料\n\nNorthstar AI 为产品、法务和支持团队构建企业知识助手。其工程团队非常看重 grounded answers、retrieval trace，以及能够在关键词检索和语义检索之间自主切换的 agentic workflow。\n\n当前重点包括 LangGraph 编排、RAG evaluation、evidence citation，以及面向客户知识库的 freshness 维护。\n",
+    "metadata": {
+      "path": "data\\raw\\company_docs\\northstar_ai.md",
+      "verification_status": "active",
+      "source_file": "northstar_ai.md"
+    }
+  },
+  {
+    "doc_id": "company_quietcloud",
+    "source_type": "company_doc",
+    "title": "Quietcloud",
+    "text": "# QuietCloud 公司资料\n\nQuietCloud 为云运维团队提供安全的内部搜索平台。其系统结合文档导入、chunking、keyword search、semantic search 和 hybrid retrieval。团队偏好能够交付可观测检索服务、且不依赖前端 UI 的后端工程师。\n",
+    "metadata": {
+      "path": "data\\raw\\company_docs\\quietcloud.md",
+      "verification_status": "active",
+      "source_file": "quietcloud.md"
+    }
+  },
+  {
+    "doc_id": "interview_agentic_rag",
+    "source_type": "interview_note",
+    "title": "Agentic Rag",
+    "text": "# 面试笔记：Agentic RAG\n\nAgentic RAG 和 top-k RAG 的区别在于，Agent 可以自主选择检索工具、检查中间 snippet、只在必要时读取完整 chunk，并在证据充分时停止。最终回答应当引用已经读取的 chunk，而不是直接引用原始搜索 snippet。\n",
+    "metadata": {
+      "path": "data\\raw\\interview_notes\\agentic_rag.md",
+      "verification_status": "active",
+      "source_file": "agentic_rag.md"
+    }
+  },
+  {
+    "doc_id": "interview_dynamic_kb",
+    "source_type": "interview_note",
+    "title": "Dynamic Kb",
+    "text": "# 面试笔记：动态知识库维护\n\n企业知识库会持续过期。岗位可能关闭、迁移到新链接，或者跨平台重复出现。一个安全的维护流程应当先验证证据，再把 closed 记录标记为 archived、写入 audit log，并刷新受影响索引，同时不删除原始记录。\n",
+    "metadata": {
+      "path": "data\\raw\\interview_notes\\dynamic_kb.md",
+      "verification_status": "active",
+      "source_file": "dynamic_kb.md"
+    }
+  }
+]

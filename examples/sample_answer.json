@@ -1,0 +1,45 @@
+{
+  "answer": "基于已读取 chunk，匹配到以下可优先关注的岗位：Northstar AI / AI Agent RAG Engineer [job_001_chunk_000]",
+  "active_jobs": [
+    {
+      "job_id": "job_001",
+      "company": "Northstar AI",
+      "title": "AI Agent RAG Engineer",
+      "verification_status": "active",
+      "confidence": 0.94,
+      "citation": "job_001_chunk_000"
+    }
+  ],
+  "closed_or_stale_jobs": [],
+  "knowledge_base_updates": [],
+  "citations": [
+    {
+      "chunk_id": "job_001_chunk_000",
+      "source_type": "job",
+      "title": "Northstar AI - AI Agent RAG Engineer",
+      "evidence": "The role requires Python, vector search, LangGraph, retrieval evaluation, chunk-level citations, and multi-agent orchestration."
+    }
+  ],
+  "retrieval_trace": [
+    {
+      "step": 1,
+      "tool": "planner"
+    },
+    {
+      "step": 2,
+      "tool": "hybrid_search"
+    },
+    {
+      "step": 3,
+      "tool": "chunk_read"
+    }
+  ],
+  "verification_trace": [],
+  "metrics": {
+    "tool_call_count": 8,
+    "read_chunk_count": 5,
+    "estimated_context_tokens": 418,
+    "latency_ms": 62
+  }
+}
+

@@ -1,0 +1,39 @@
+[
+  {
+    "step": 1,
+    "tool": "planner",
+    "inputs": {
+      "question": "哪些岗位要求 RAG、LangGraph 或多 Agent 编排经验？"
+    },
+    "outputs": {
+      "search_tool": "hybrid_search",
+      "requires_verification": false,
+      "rationale": "问题中包含明确的公司名、项目名或技能关键词，优先走混合检索。"
+    }
+  },
+  {
+    "step": 2,
+    "tool": "hybrid_search",
+    "inputs": {
+      "query": "哪些岗位要求 RAG、LangGraph 或多 Agent 编排经验？"
+    },
+    "outputs": {
+      "chunk_ids": [
+        "job_001_chunk_000",
+        "job_004_chunk_000",
+        "job_007_chunk_000"
+      ]
+    }
+  },
+  {
+    "step": 3,
+    "tool": "chunk_read",
+    "inputs": {
+      "chunk_id": "job_001_chunk_000"
+    },
+    "outputs": {
+      "has_text": true,
+      "title": "Northstar AI - AI Agent RAG Engineer"
+    }
+  }
+]

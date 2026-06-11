@@ -1,0 +1,199 @@
+{
+  "overall_metrics": {
+    "context_token_usage": 412.4,
+    "evidence_recall": 0.8,
+    "groundedness_score": 1.0,
+    "latency_ms": 2.2,
+    "retrieval_hit_rate": 1.0,
+    "skill_extraction_f1": 0.262004662004662,
+    "skill_extraction_precision": 0.16858585858585856,
+    "skill_extraction_recall": 0.6,
+    "tool_call_count": 8.0
+  },
+  "cases": [
+    {
+      "id": "qa_001",
+      "question": "哪些岗位要求 RAG、LangGraph 或多 Agent 编排经验？",
+      "gold_chunk_ids": [
+        "job_001_chunk_000",
+        "job_004_chunk_000"
+      ],
+      "read_chunks": [
+        "job_001_chunk_000",
+        "job_004_chunk_000",
+        "job_007_chunk_000",
+        "interview_agentic_rag_chunk_000",
+        "job_005_chunk_000"
+      ],
+      "retrieval_path": [
+        "planner",
+        "hybrid_search",
+        "rerank_context",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "compress_context"
+      ],
+      "metrics": {
+        "retrieval_hit_rate": 1.0,
+        "evidence_recall": 1.0,
+        "groundedness_score": 1.0,
+        "skill_extraction_precision": 0.3,
+        "skill_extraction_recall": 1.0,
+        "skill_extraction_f1": 0.4615384615384615,
+        "context_token_usage": 418.0,
+        "tool_call_count": 8.0,
+        "latency_ms": 4.0
+      }
+    },
+    {
+      "id": "qa_002",
+      "question": "哪些岗位更看重 RAG evaluation 和 groundedness？",
+      "gold_chunk_ids": [
+        "job_007_chunk_000"
+      ],
+      "read_chunks": [
+        "job_007_chunk_000",
+        "job_001_chunk_000",
+        "job_002_chunk_000",
+        "company_civicflow_ai_chunk_000",
+        "job_005_chunk_000"
+      ],
+      "retrieval_path": [
+        "planner",
+        "hybrid_search",
+        "rerank_context",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "compress_context"
+      ],
+      "metrics": {
+        "retrieval_hit_rate": 1.0,
+        "evidence_recall": 1.0,
+        "groundedness_score": 1.0,
+        "skill_extraction_precision": 0.1111111111111111,
+        "skill_extraction_recall": 0.5,
+        "skill_extraction_f1": 0.1818181818181818,
+        "context_token_usage": 400.0,
+        "tool_call_count": 8.0,
+        "latency_ms": 2.0
+      }
+    },
+    {
+      "id": "qa_003",
+      "question": "我的 akashic-agent 项目能匹配哪些 JD 要求？",
+      "gold_chunk_ids": [
+        "resume_chunk_000",
+        "job_004_chunk_000"
+      ],
+      "read_chunks": [
+        "resume_chunk_000",
+        "job_001_chunk_000",
+        "job_008_chunk_000",
+        "job_007_chunk_000",
+        "job_005_chunk_000"
+      ],
+      "retrieval_path": [
+        "planner",
+        "hybrid_search",
+        "rerank_context",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "compress_context"
+      ],
+      "metrics": {
+        "retrieval_hit_rate": 1.0,
+        "evidence_recall": 0.5,
+        "groundedness_score": 1.0,
+        "skill_extraction_precision": 0.25,
+        "skill_extraction_recall": 1.0,
+        "skill_extraction_f1": 0.4,
+        "context_token_usage": 503.0,
+        "tool_call_count": 8.0,
+        "latency_ms": 2.0
+      }
+    },
+    {
+      "id": "qa_004",
+      "question": "哪些公司资料强调企业知识库和 citation？",
+      "gold_chunk_ids": [
+        "company_northstar_ai_chunk_000",
+        "company_civicflow_ai_chunk_000"
+      ],
+      "read_chunks": [
+        "job_001_chunk_000",
+        "resume_chunk_000",
+        "company_northstar_ai_chunk_000",
+        "company_civicflow_ai_chunk_000",
+        "resume_chunk_001"
+      ],
+      "retrieval_path": [
+        "planner",
+        "hybrid_search",
+        "rerank_context",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "compress_context"
+      ],
+      "metrics": {
+        "retrieval_hit_rate": 1.0,
+        "evidence_recall": 1.0,
+        "groundedness_score": 1.0,
+        "skill_extraction_precision": 0.0,
+        "skill_extraction_recall": 0.0,
+        "skill_extraction_f1": 0.0,
+        "context_token_usage": 368.0,
+        "tool_call_count": 8.0,
+        "latency_ms": 2.0
+      }
+    },
+    {
+      "id": "qa_005",
+      "question": "动态知识库维护需要解决哪些问题？",
+      "gold_chunk_ids": [
+        "interview_dynamic_kb_chunk_000",
+        "job_008_chunk_000"
+      ],
+      "read_chunks": [
+        "interview_agentic_rag_chunk_000",
+        "job_001_chunk_000",
+        "job_008_chunk_000",
+        "job_004_chunk_000",
+        "company_civicflow_ai_chunk_000"
+      ],
+      "retrieval_path": [
+        "planner",
+        "semantic_search",
+        "rerank_context",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "chunk_read",
+        "compress_context"
+      ],
+      "metrics": {
+        "retrieval_hit_rate": 1.0,
+        "evidence_recall": 0.5,
+        "groundedness_score": 1.0,
+        "skill_extraction_precision": 0.18181818181818182,
+        "skill_extraction_recall": 0.5,
+        "skill_extraction_f1": 0.26666666666666666,
+        "context_token_usage": 373.0,
+        "tool_call_count": 8.0,
+        "latency_ms": 1.0
+      }
+    }
+  ]
+}

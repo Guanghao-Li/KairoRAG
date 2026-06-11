@@ -1,0 +1,314 @@
+[
+  {
+    "job_id": "job_001",
+    "company": "Northstar AI",
+    "title": "AI Agent RAG Engineer",
+    "location": "Remote US",
+    "jd_text": "负责为企业知识库构建 agentic RAG workflow。岗位要求 Python、向量检索、LangGraph、retrieval evaluation、chunk 级 citation 和多 Agent 编排能力。",
+    "required_skills": [
+      "Python",
+      "RAG",
+      "LangGraph",
+      "Vector Search",
+      "Evaluation"
+    ],
+    "preferred_skills": [
+      "MCP",
+      "OpenAI API",
+      "FastAPI"
+    ],
+    "agent_related_keywords": [
+      "agentic rag",
+      "multi agent",
+      "chunk citation"
+    ],
+    "job_url": "mock://jobs/job_001_active",
+    "source_platform": "company_careers",
+    "first_seen_at": "2026-05-01T00:00:00Z",
+    "last_verified_at": "2026-06-09T00:00:00Z",
+    "verification_status": "active",
+    "verification_confidence": 0.94,
+    "evidence_urls": [
+      "mock://jobs/job_001_active"
+    ],
+    "evidence_snippets": [
+      "公司 careers 页面显示“Apply now”。"
+    ],
+    "closed_reason": "",
+    "archived_at": "",
+    "content_hash": "9c011d8a19ec0d89",
+    "duplicate_of": "",
+    "priority": 1
+  },
+  {
+    "job_id": "job_002",
+    "company": "HelioData",
+    "title": "LLM Knowledge Base Intern",
+    "location": "New York NY",
+    "jd_text": "支持内部知识库问答、文档切分、hybrid retrieval、prompt evaluation，以及面向客服场景的无 UI 后端实验。",
+    "required_skills": [
+      "Python",
+      "Information Retrieval",
+      "RAG",
+      "SQL"
+    ],
+    "preferred_skills": [
+      "LangChain",
+      "BM25",
+      "Evaluation"
+    ],
+    "agent_related_keywords": [
+      "knowledge base",
+      "hybrid retrieval",
+      "rag eval"
+    ],
+    "job_url": "mock://jobs/job_002_active",
+    "source_platform": "company_careers",
+    "first_seen_at": "2026-05-03T00:00:00Z",
+    "last_verified_at": "2026-06-08T00:00:00Z",
+    "verification_status": "active",
+    "verification_confidence": 0.91,
+    "evidence_urls": [
+      "mock://jobs/job_002_active"
+    ],
+    "evidence_snippets": [
+      "页面可见“Submit application”。"
+    ],
+    "closed_reason": "",
+    "archived_at": "",
+    "content_hash": "8ce708c9d1dd2910",
+    "duplicate_of": "",
+    "priority": 2
+  },
+  {
+    "job_id": "job_003",
+    "company": "VectorWorks Labs",
+    "title": "Agentic Retrieval Research Assistant",
+    "location": "Boston MA",
+    "jd_text": "负责原型化 keyword search、semantic search、chunk_read 工具、reranking，以及面向长上下文问答任务的 context budget 控制。",
+    "required_skills": [
+      "Python",
+      "Embeddings",
+      "Reranking",
+      "Context Budget"
+    ],
+    "preferred_skills": [
+      "GraphRAG",
+      "Evaluation"
+    ],
+    "agent_related_keywords": [
+      "keyword search",
+      "semantic search",
+      "chunk_read"
+    ],
+    "job_url": "mock://jobs/job_003_closed",
+    "source_platform": "third_party",
+    "first_seen_at": "2026-04-10T00:00:00Z",
+    "last_verified_at": "2026-05-20T00:00:00Z",
+    "verification_status": "closed",
+    "verification_confidence": 0.93,
+    "evidence_urls": [
+      "mock://jobs/job_003_closed"
+    ],
+    "evidence_snippets": [
+      "页面显示“This job is no longer available”。"
+    ],
+    "closed_reason": "position filled",
+    "archived_at": "2026-05-20T00:00:00Z",
+    "content_hash": "6a5321d441da9a34",
+    "duplicate_of": "",
+    "priority": 5
+  },
+  {
+    "job_id": "job_004",
+    "company": "Atlas Robotics",
+    "title": "Multi-Agent Platform Engineer",
+    "location": "San Francisco CA",
+    "jd_text": "开发 Agent 工具、workflow orchestration、tool registry、长期记忆适配层，以及面向机器人运营场景的检索集成能力。",
+    "required_skills": [
+      "Python",
+      "Tool Calling",
+      "Multi-Agent",
+      "MCP"
+    ],
+    "preferred_skills": [
+      "RAG",
+      "LangGraph",
+      "Observability"
+    ],
+    "agent_related_keywords": [
+      "tool calling",
+      "multi agent",
+      "mcp"
+    ],
+    "job_url": "mock://jobs/job_004_stale",
+    "source_platform": "company_careers",
+    "first_seen_at": "2026-05-15T00:00:00Z",
+    "last_verified_at": "2026-05-21T00:00:00Z",
+    "verification_status": "stale",
+    "verification_confidence": 0.28,
+    "evidence_urls": [
+      "mock://jobs/job_004_stale"
+    ],
+    "evidence_snippets": [
+      "目前无法确认岗位状态。"
+    ],
+    "closed_reason": "evidence stale",
+    "archived_at": "",
+    "content_hash": "cd66587d952e57c4",
+    "duplicate_of": "",
+    "priority": 3
+  },
+  {
+    "job_id": "job_005",
+    "company": "QuietCloud",
+    "title": "Enterprise RAG Backend Engineer",
+    "location": "Seattle WA",
+    "jd_text": "负责企业文档的 indexing、chunking、keyword retrieval、semantic retrieval、hybrid search、evaluation 数据集，以及基于证据的回答生成。",
+    "required_skills": [
+      "Python",
+      "RAG",
+      "Hybrid Search",
+      "Chunking",
+      "Evaluation"
+    ],
+    "preferred_skills": [
+      "OpenAI",
+      "Postgres",
+      "Search"
+    ],
+    "agent_related_keywords": [
+      "enterprise rag",
+      "hybrid search",
+      "citations"
+    ],
+    "job_url": "mock://jobs/job_005_unknown",
+    "source_platform": "company_careers",
+    "first_seen_at": "2026-05-22T00:00:00Z",
+    "last_verified_at": "",
+    "verification_status": "unknown",
+    "verification_confidence": 0.0,
+    "evidence_urls": [],
+    "evidence_snippets": [],
+    "closed_reason": "unknown",
+    "archived_at": "",
+    "content_hash": "0e0ea826347da7cd",
+    "duplicate_of": "",
+    "priority": 2
+  },
+  {
+    "job_id": "job_006",
+    "company": "Northstar AI",
+    "title": "AI Agent RAG Engineer",
+    "location": "Remote US",
+    "jd_text": "与主岗位重复发布的版本，内容同样强调 Python、向量检索、LangGraph、retrieval evaluation、citation 和多 Agent 编排能力。",
+    "required_skills": [
+      "Python",
+      "RAG",
+      "LangGraph",
+      "Vector Search",
+      "Evaluation"
+    ],
+    "preferred_skills": [
+      "MCP",
+      "OpenAI API"
+    ],
+    "agent_related_keywords": [
+      "agentic rag",
+      "multi agent",
+      "duplicate"
+    ],
+    "job_url": "mock://jobs/job_001_active",
+    "source_platform": "third_party",
+    "first_seen_at": "2026-05-02T00:00:00Z",
+    "last_verified_at": "2026-06-01T00:00:00Z",
+    "verification_status": "duplicate",
+    "verification_confidence": 0.88,
+    "evidence_urls": [
+      "mock://jobs/job_001_active"
+    ],
+    "evidence_snippets": [
+      "这是 company careers 主岗位的重复发布。"
+    ],
+    "closed_reason": "duplicate",
+    "archived_at": "",
+    "content_hash": "f1c4160a984d98a4",
+    "duplicate_of": "job_001",
+    "priority": 9
+  },
+  {
+    "job_id": "job_007",
+    "company": "CivicFlow AI",
+    "title": "RAG Evaluation Engineer",
+    "location": "Washington DC",
+    "jd_text": "为公共部门知识助手构建确定性 RAG evaluation，包括 groundedness、retrieval hit rate、evidence recall 和 skill extraction F1。",
+    "required_skills": [
+      "Python",
+      "RAG Evaluation",
+      "Metrics",
+      "Groundedness"
+    ],
+    "preferred_skills": [
+      "pytest",
+      "Data Pipelines"
+    ],
+    "agent_related_keywords": [
+      "rag evaluation",
+      "groundedness",
+      "evidence recall"
+    ],
+    "job_url": "mock://jobs/job_007_active",
+    "source_platform": "company_careers",
+    "first_seen_at": "2026-05-25T00:00:00Z",
+    "last_verified_at": "2026-06-10T00:00:00Z",
+    "verification_status": "active",
+    "verification_confidence": 0.96,
+    "evidence_urls": [
+      "mock://jobs/job_007_active"
+    ],
+    "evidence_snippets": [
+      "页面显示“Apply now”。"
+    ],
+    "closed_reason": "",
+    "archived_at": "",
+    "content_hash": "61e10134c9a8b098",
+    "duplicate_of": "",
+    "priority": 1
+  },
+  {
+    "job_id": "job_008",
+    "company": "DeltaOps",
+    "title": "AI Knowledge Maintenance Engineer",
+    "location": "Austin TX",
+    "jd_text": "维护动态知识库、验证 stale 岗位记录、soft archive 已关闭内容、刷新受影响索引，并保留 audit log。",
+    "required_skills": [
+      "Python",
+      "Data Quality",
+      "RAG",
+      "Audit Logs"
+    ],
+    "preferred_skills": [
+      "Web Parsing",
+      "Search APIs",
+      "Scheduling"
+    ],
+    "agent_related_keywords": [
+      "freshness verification",
+      "soft archive",
+      "index refresh"
+    ],
+    "job_url": "mock://jobs/job_008_updated",
+    "source_platform": "company_careers",
+    "first_seen_at": "2026-05-28T00:00:00Z",
+    "last_verified_at": "2026-06-02T00:00:00Z",
+    "verification_status": "unknown",
+    "verification_confidence": 0.0,
+    "evidence_urls": [],
+    "evidence_snippets": [],
+    "closed_reason": "unknown",
+    "archived_at": "",
+    "content_hash": "1e0f10ef2717715f",
+    "duplicate_of": "",
+    "priority": 2
+  }
+]

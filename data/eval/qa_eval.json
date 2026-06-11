@@ -1,0 +1,33 @@
+[
+  {
+    "id": "qa_001",
+    "question": "哪些岗位要求 RAG、LangGraph 或多 Agent 编排经验？",
+    "expected_skills": ["RAG", "LangGraph", "Multi-Agent"],
+    "gold_chunk_ids": ["job_001_chunk_000", "job_004_chunk_000"]
+  },
+  {
+    "id": "qa_002",
+    "question": "哪些岗位更看重 RAG evaluation 和 groundedness？",
+    "expected_skills": ["RAG Evaluation", "Groundedness"],
+    "gold_chunk_ids": ["job_007_chunk_000"]
+  },
+  {
+    "id": "qa_003",
+    "question": "我的 akashic-agent 项目能匹配哪些 JD 要求？",
+    "expected_skills": ["Tool Calling", "MCP", "Multi-Agent"],
+    "gold_chunk_ids": ["resume_chunk_000", "job_004_chunk_000"]
+  },
+  {
+    "id": "qa_004",
+    "question": "哪些公司资料强调企业知识库和 citation？",
+    "expected_skills": ["Citations", "Enterprise Knowledge Base"],
+    "gold_chunk_ids": ["company_northstar_ai_chunk_000", "company_civicflow_ai_chunk_000"]
+  },
+  {
+    "id": "qa_005",
+    "question": "动态知识库维护需要解决哪些问题？",
+    "expected_skills": ["Freshness", "Soft Archive", "Audit Logs", "Index Refresh"],
+    "gold_chunk_ids": ["interview_dynamic_kb_chunk_000", "job_008_chunk_000"]
+  }
+]
+
