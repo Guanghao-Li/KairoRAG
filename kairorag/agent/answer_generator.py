@@ -1,4 +1,4 @@
-"""Grounded answer generation from read chunks only."""
+"""Legacy / Deprecated：确定性答案生成器，仅保留给离线 demo 和评测对照。"""
 
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def generate_answer(
     verification_results: list[JobVerificationResult] | None = None,
     metrics: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Generate a deterministic answer grounded only in read chunks."""
+    """Legacy：只基于已读取 chunk 生成确定性答案。"""
 
     verification_results = verification_results or []
     metrics = metrics or {}
@@ -133,4 +133,3 @@ def generate_answer(
         "verification_trace": [result.to_dict() for result in verification_results],
         "metrics": metrics,
     }
-

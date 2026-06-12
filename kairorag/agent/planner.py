@@ -1,4 +1,4 @@
-"""Rule-based planner for offline Agentic RAG."""
+"""Legacy / Deprecated：离线 rule-based planner，后续会被 LLM agent planner 替换。"""
 
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ class Plan:
 
 
 def plan_query(question: str, verify_jobs: bool = False) -> Plan:
-    """Choose a retrieval path from query characteristics."""
+    """Legacy：基于规则选择检索路径。"""
 
     lowered = question.lower()
     requires_verification = verify_jobs or any(term in lowered for term in VERIFY_TERMS)
@@ -50,4 +50,3 @@ def plan_query(question: str, verify_jobs: bool = False) -> Plan:
     if has_keyword:
         return Plan("hybrid_search", False, "Question contains exact company, project, or skill terms.")
     return Plan("semantic_search", False, "Question is mostly conceptual, so semantic retrieval is preferred.")
-

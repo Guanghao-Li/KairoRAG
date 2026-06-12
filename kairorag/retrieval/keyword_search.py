@@ -1,4 +1,4 @@
-"""Keyword retrieval tool."""
+"""Legacy / Deprecated：基于 keyword overlap pickle 索引的本地检索工具。"""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ def keyword_search(
     include_archived: bool = False,
     index_dir: str | Path = INDEX_DIR,
 ) -> list[SearchResult]:
-    """Search by exact lexical overlap, excluding closed/duplicate jobs by default."""
+    """Legacy：执行本地 keyword overlap 检索。"""
 
     filters = filters or {}
     include_archived = bool(filters.get("include_archived", include_archived))
@@ -32,4 +32,3 @@ def keyword_search_trace(query: str, results: list[SearchResult]) -> dict[str, A
         "result_count": len(results),
         "chunk_ids": [result.chunk_id for result in results],
     }
-

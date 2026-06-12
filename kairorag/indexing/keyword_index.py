@@ -1,4 +1,4 @@
-"""Deterministic keyword-overlap index."""
+"""Legacy / Deprecated：keyword overlap 本地索引，仅保留给离线 demo。"""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from kairorag.schemas import ChunkRecord, SearchResult
 
 
 class KeywordIndex:
-    """Lightweight lexical index that favors exact terms and titles."""
+    """Legacy / Deprecated：基于词频重叠的轻量索引，不再是 cloud 主路径。"""
 
     def __init__(self) -> None:
         self.chunks: list[ChunkRecord] = []
@@ -83,4 +83,3 @@ def _make_snippet(text: str, query_terms: list[str], width: int = 220) -> str:
     if start + width < len(text):
         snippet += "..."
     return snippet
-

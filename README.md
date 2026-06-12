@@ -1,177 +1,114 @@
-# KairoRAG：Agentic Knowledge Retrieval System
+# KairoRAG
 
-## 项目概述
+KairoRAG 已从离线 rule-based RAG demo 转向 cloud-native Agentic RAG 底座。阶段一重点是建立真实云服务主路径：OpenAI LLM、OpenAI embedding、Qdrant vector database、BM25 keyword search、未来真实 web search provider、未来 cross-encoder reranker，以及后续 LLM autonomous planning agent 的 provider 边界。
 
-KairoRAG 是一个面向企业知识库的 Agentic RAG 检索、评测与动态维护系统。它围绕 JD、简历、公司资料和面试材料构建，采用后端优先的实现方式，在不依赖付费 API 的前提下即可本地运行。
+旧的 offline hashing embedding、pickle vector store、keyword overlap、rule-based planner、mock web search 和 deterministic answer generator 已经标记为 Legacy / Deprecated。它们仍保留给历史对照和离线测试，但新的 cloud runtime 不会默认 fallback 到这些旧实现；缺少云服务环境变量时会直接报出清晰错误。
 
-这个项目重点展示面向真实工程场景的 RAG 能力：文档加载、切分、关键词索引、语义索引、混合检索、chunk 级证据引用、上下文预算控制、检索轨迹记录、确定性 RAG 评测，以及岗位 freshness 验证与知识库维护。
-
-## 为什么是 Agentic RAG
-
-普通 top-k RAG：
-
-```text
-question -> vector search top-k -> 把 chunks 塞进 prompt -> answer
-```
-
-KairoRAG：
-
-```text
-question -> Agent 规划检索路径
-  -> keyword_search / semantic_search / hybrid_search
-  -> rerank
-  -> chunk_read
-  -> context budget
-  -> 保留 citation 的上下文压缩
-  -> 基于证据生成答案
-  -> eval
-  -> 需要时验证并更新知识库
-```
-
-关键区别在于：搜索结果里的 snippet 只是线索，不是最终证据。最终回答必须建立在 `chunk_read` 读到的内容，或保留原始 `chunk_id` 的压缩证据块之上。
-
-## 核心特性
-
-- 分层检索工具：提供 `keyword_search`、`semantic_search`、`hybrid_search` 和 `chunk_read`。
-- Agentic 检索规划：planner 会根据精确术语、语义意图和 freshness 需求决定检索路径。
-- 混合检索：通过 reciprocal rank fusion 组合关键词检索和本地向量检索。
-- Chunk 级证据引用：每条回答引用都包含支持它的 `chunk_id`。
-- 上下文预算控制：限制搜索结果数、读取 chunk 数、上下文 token 数和工具调用次数。
-- 检索轨迹记录：planner、search、rerank、read、compress 的每一步都会被记录。
-- RAG 评测：提供确定性的 retrieval hit rate、evidence recall、groundedness、skill F1、token usage 和 tool-call 指标。
-- 动态知识库维护：支持岗位验证、stale 检测、soft archive、audit log、去重和索引刷新。
-- Mock 优先的外部接口：网页搜索和页面解析支持 `mock://` 证据，离线也能跑通。
-
-## 系统架构
+## 架构方向
 
 ```mermaid
 flowchart LR
-  Q[用户问题] --> A[ReAct Agent]
-  A --> P[Planner]
-  P --> T[Tool Registry]
-  T --> K[keyword_search]
-  T --> S[semantic_search]
-  T --> H[hybrid_search]
-  H --> R[rerank_context]
-  R --> C[chunk_read]
-  C --> B[Context Budget Manager]
-  B --> X[context_compression]
-  X --> G[Answer Generator]
-  G --> O[Citations + Retrieval Trace]
-  O --> E[Evaluation]
+  Q[用户问题] --> A[未来 LLM autonomous planning agent]
+  A --> L[OpenAI LLM provider]
+  A --> E[OpenAI embedding provider]
+  E --> V[Qdrant vector database]
+  A --> K[BM25 keyword search]
+  A --> W[未来真实 web search provider]
+  A --> R[未来 cross-encoder reranker]
+  V --> C[可引用上下文]
+  K --> C
+  W --> C
+  R --> C
 ```
 
-动态维护流程：
+阶段一已经实现：
 
-```mermaid
-flowchart LR
-  Q[用户查询] --> R[检索候选岗位]
-  R --> F[检查 freshness 元数据]
-  F --> V[验证原始 URL 或网页证据]
-  V --> P[解析页面状态信号]
-  P --> U[更新岗位元数据]
-  U --> A[Soft archive 已关闭岗位]
-  U --> I[刷新受影响索引]
-  I --> O[返回已验证的 active 岗位和引用]
-```
+- `KairoCloudSettings`：统一读取 cloud runtime 环境变量。
+- `validate_cloud_runtime()`：检查 OpenAI、Qdrant 和 web search provider 的关键配置。
+- `OpenAILLMProvider`：使用官方 OpenAI Python SDK。
+- `OpenAIEmbeddingProvider`：使用 `OPENAI_EMBEDDING_MODEL` 批量生成 embedding。
+- `QdrantVectorStoreProvider`：支持 collection、upsert、search、delete、healthcheck 和基础 metadata filter。
+- `BM25KeywordSearchProvider`：使用 `rank_bm25.BM25Okapi` 的真实 BM25 关键词检索。
+- `WebSearchProvider`：保留 Tavily / SerpAPI / Bing 的配置骨架，不提供 mock fallback。
+- `CrossEncoderRerankerProvider`：仅保留接口骨架，不伪造 cross-encoder 行为。
 
-## 数据来源
+## 环境变量
 
-- `data/raw/jobs.csv`：mock 岗位知识库，覆盖 active、closed、stale、unknown 和 duplicate 状态。
-- `data/raw/resume.md`：包含 `akashic-agent` 经验的候选人简历。
-- `data/raw/company_docs/`：公司资料 markdown。
-- `data/raw/interview_notes/`：面试准备笔记。
-- `data/eval/qa_eval.json`：RAG 问答评测集。
-- `data/eval/job_verification_eval.json`：岗位验证评测集。
-
-## 快速开始
-
-如需可编辑安装：
+cloud runtime 必须从环境变量读取密钥和 provider 配置，不要把密钥写入代码、测试或样例数据。
 
 ```bash
-python -m pip install -e .
+KAIRO_ENV=dev
+LLM_PROVIDER=openai
+OPENAI_API_KEY=...
+OPENAI_CHAT_MODEL=gpt-4.1-mini
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+VECTOR_STORE_PROVIDER=qdrant
+QDRANT_URL=...
+QDRANT_API_KEY=...
+QDRANT_COLLECTION=kairo_chunks
+WEB_SEARCH_PROVIDER=tavily
+TAVILY_API_KEY=...
+RERANKER_PROVIDER=bm25
+MAX_SEARCH_RESULTS=10
+MAX_CHUNKS_TO_READ=5
+MAX_CONTEXT_TOKENS=6000
+MAX_TOOL_CALLS=20
+REQUEST_TIMEOUT_SECONDS=30
 ```
 
-构建索引：
+如果选择 `WEB_SEARCH_PROVIDER=serpapi`，需要提供 `SERPAPI_API_KEY`；如果选择 `WEB_SEARCH_PROVIDER=bing`，需要提供 `BING_API_KEY`。如果选择 `RERANKER_PROVIDER=cross_encoder`，阶段一会要求 `CROSS_ENCODER_MODEL`，但真实 cross-encoder 调用会留到后续阶段。
+
+## 安装与测试
+
+安装项目和开发依赖：
 
 ```bash
-python -m kairorag.indexing.build_index --input data/raw --output data/indexes
+python -m pip install -e ".[dev]"
 ```
 
-运行单条查询：
+运行测试：
 
 ```bash
-python -m kairorag.demos.run_single_query \
-  --question "哪些岗位要求 RAG、LangGraph 或多 Agent 编排经验？"
+pytest
 ```
 
-查询并验证岗位状态：
+当前测试使用 fake client / mock client 验证 provider contract，不会调用真实 OpenAI、Qdrant 或外部搜索 API。
 
-```bash
-python -m kairorag.demos.run_single_query \
-  --question "只返回目前仍在招聘、并且要求 RAG 或多 Agent 编排经验的岗位" \
-  --verify-jobs
+## Cloud Runtime 校验
+
+可以直接校验 cloud 主路径配置：
+
+```python
+from kairorag.config import KairoCloudSettings, validate_cloud_runtime
+
+settings = validate_cloud_runtime(KairoCloudSettings())
 ```
 
-运行 RAG 评测：
+缺少 `OPENAI_API_KEY`、`QDRANT_URL`、`QDRANT_API_KEY` 或所选 web search provider 的 key 时，会抛出清晰的 `CloudRuntimeConfigurationError`，错误信息会列出缺失变量。
 
-```bash
-python -m kairorag.demos.run_batch_eval \
-  --eval-file data/eval/qa_eval.json \
-  --output results/eval_report.json
+需要构建 provider 聚合对象时：
+
+```python
+from kairorag.cloud import build_cloud_runtime
+
+runtime = build_cloud_runtime()
 ```
 
-运行岗位验证评测：
+`build_cloud_runtime()` 会先校验配置，再构建真实 provider，不会静默切回 legacy 本地实现。
 
-```bash
-python -m kairorag.demos.run_batch_eval \
-  --eval-file data/eval/job_verification_eval.json \
-  --output results/job_verification_eval_report.json \
-  --job-verification --mock-web
-```
+## Legacy 离线实现
 
-批量验证岗位：
+以下旧模块仍存在，但已标记为 Legacy / Deprecated：
 
-```bash
-python -m kairorag.maintenance.job_verifier \
-  --jobs-file data/raw/jobs.csv \
-  --status unknown,stale \
-  --limit 5
-```
+- `kairorag.indexing.embedding.HashingEmbeddingProvider`
+- `kairorag.indexing.vector_store.VectorStore`
+- `kairorag.indexing.keyword_index.KeywordIndex`
+- `kairorag.agent.planner.plan_query`
+- `kairorag.maintenance.web_search.search_web`
+- `kairorag.agent.answer_generator.generate_answer`
 
-## 示例问题
+说明见 [`kairorag/legacy/README.md`](kairorag/legacy/README.md)。旧 demo、旧评测和本地索引仍可用于历史对照，但不再代表 cloud 主路径。
 
-1. 哪些岗位要求 RAG 或知识库问答经验？
-2. 哪些岗位更看重 LangGraph / 多 Agent 编排？
-3. 我的 akashic-agent 项目能匹配哪些 JD 要求？
-4. 我还缺哪些技能点？
-5. 只返回目前仍在招聘、并且要求 RAG 或多 Agent 编排经验的岗位。
+## 后续阶段
 
-## 评测指标
-
-KairoRAG 使用确定性指标，因此无需 LLM judge 也能运行：
-
-- `retrieval_hit_rate`：gold chunk 是否至少有一个出现在 search results 或 read chunks 中。
-- `evidence_recall`：`chunk_read` 覆盖了多少 gold chunks。
-- `groundedness_score`：citations 是否来自 read chunks，且是否覆盖 gold 证据。
-- `skill_extraction_f1`：预测技能与期望技能的匹配程度。
-- `context_token_usage`：读取证据后的上下文 token 估计值。
-- `tool_call_count`：检索与验证动作的调用次数。
-- `verification_accuracy`：岗位状态判断准确率。
-- `active_precision`：active 岗位预测精度。
-- `closed_recall`：closed 岗位召回率。
-- `evidence_domain_match`：证据来源是否符合预期的 mock/web 域。
-
-## 动态知识库维护
-
-企业知识库会过期：岗位会关闭、换链接、跨平台重复发布，或者变成无法确认的 stale 状态。KairoRAG 通过基于证据的维护流程处理这些问题：
-
-- `active`：当前页面或搜索证据显示仍可申请。
-- `closed`：可靠页面证据显示岗位已关闭或已招满。
-- `stale`：证据不足，因此系统明确标记为“不确定”。
-- `updated`：旧链接失效，但搜索发现了新的 active 岗位页。
-- `duplicate`：该记录指向主记录，默认检索时不返回。
-
-Closed 和 duplicate 岗位不会被物理删除，只会 soft archive 或标记为 inactive，然后从默认检索中排除。更新流程支持 dry-run，也支持通过 `--apply-updates` 实际写回；只有实际写回时才会把记录追加到 `data/maintenance/audit_log.jsonl`。
-
-当前索引刷新器采用 fallback rebuild 策略，先保证行为正确，再把真正的增量刷新留给后续优化。
+阶段一刻意没有实现完整 LLM autonomous planning agent、真实 web search HTTP 调用、真实 cross-encoder rerank、完整 job freshness verification 云化，也没有删除旧本地模块。后续阶段会继续把 agent loop、web search、rerank、freshness verification 和 legacy 清理纳入真实云服务路径。

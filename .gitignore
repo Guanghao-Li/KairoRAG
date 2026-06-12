@@ -1,4 +1,22 @@
 __pycache__/
 .pytest_cache/
 *.pyc
+*.pyo
+*.pyd
 
+# Packaging artifacts
+*.egg-info/
+build/
+dist/
+
+# Local environments
+.venv/
+venv/
+.env
+.env.*
+
+# Local outputs
+data/maintenance/
+
+# Personal files
+简历*.md

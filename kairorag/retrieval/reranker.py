@@ -1,4 +1,4 @@
-"""Simple deterministic reranking."""
+"""Legacy / Deprecated：基于词重叠的确定性重排，仅保留给离线 demo。"""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from kairorag.schemas import SearchResult
 
 
 def rerank_context(query: str, results: list[SearchResult], top_k: int | None = None) -> list[SearchResult]:
-    """Rerank candidates using query/snippet overlap plus original score."""
+    """Legacy：用 query/snippet overlap 加原始分数做重排。"""
 
     query_terms = set(tokenize(query))
     reranked: list[SearchResult] = []
@@ -29,4 +29,3 @@ def rerank_context(query: str, results: list[SearchResult], top_k: int | None = 
         )
     reranked.sort(key=lambda item: item.score, reverse=True)
     return reranked[:top_k] if top_k else reranked
-

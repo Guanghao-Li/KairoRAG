@@ -1,4 +1,4 @@
-"""Rule-based ReAct-style Agentic RAG loop."""
+"""Legacy / Deprecated：离线 rule-based ReAct-style RAG loop。"""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from kairorag.schemas import JobVerificationResult, ReadChunkResult
 
 
 def ensure_indexes(index_dir: str | Path = INDEX_DIR) -> None:
-    """Build local indexes if they are missing."""
+    """Legacy：缺失时构建本地 pickle 索引。"""
 
     index_path = Path(index_dir)
     if not (index_path / "keyword_index.pkl").exists() or not (index_path / "vector_store.pkl").exists():
@@ -34,7 +34,7 @@ def ensure_indexes(index_dir: str | Path = INDEX_DIR) -> None:
 
 
 class ReactAgent:
-    """Offline ReAct-style loop with explicit retrieval actions."""
+    """Legacy / Deprecated：离线规则 agent，不再代表 cloud 主路径。"""
 
     def __init__(
         self,
@@ -54,7 +54,7 @@ class ReactAgent:
         verify_jobs: bool = False,
         apply_kb_updates: bool = False,
     ) -> dict[str, Any]:
-        """Execute search, read, optional verification, and grounded answer generation."""
+        """Legacy：执行本地检索、读取、可选验证和确定性答案生成。"""
 
         ensure_indexes(self.index_dir)
         start = time.perf_counter()

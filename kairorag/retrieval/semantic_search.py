@@ -1,4 +1,4 @@
-"""Semantic retrieval tool backed by local hashing vectors."""
+"""Legacy / Deprecated：基于本地 hashing vectors 的语义检索工具。"""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ def semantic_search(
     include_archived: bool = False,
     index_dir: str | Path = INDEX_DIR,
 ) -> list[SearchResult]:
-    """Search by local vector similarity, excluding closed/duplicate jobs by default."""
+    """Legacy：执行本地 hashing vector 相似度检索。"""
 
     filters = filters or {}
     include_archived = bool(filters.get("include_archived", include_archived))
@@ -32,4 +32,3 @@ def semantic_search_trace(query: str, results: list[SearchResult]) -> dict[str, 
         "result_count": len(results),
         "chunk_ids": [result.chunk_id for result in results],
     }
-

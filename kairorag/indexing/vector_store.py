@@ -1,4 +1,4 @@
-"""Simple pickle-backed vector store."""
+"""Legacy / Deprecated：pickle 本地向量库，仅保留给离线 demo 和迁移对照。"""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from kairorag.schemas import ChunkRecord, SearchResult
 
 
 class VectorStore:
-    """In-memory vector index saved with pickle."""
+    """Legacy / Deprecated：使用 hashing embedding 和 pickle 的本地向量索引。"""
 
     def __init__(self, dim: int = 128) -> None:
         self.dim = dim
@@ -63,4 +63,3 @@ class VectorStore:
     def load(cls, path: str | Path) -> "VectorStore":
         with Path(path).open("rb") as handle:
             return pickle.load(handle)
-

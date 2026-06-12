@@ -1,4 +1,4 @@
-"""Mockable web search abstraction for job verification."""
+"""Legacy / Deprecated：mock web search，仅保留给离线岗位验证 demo。"""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from kairorag.schemas import WebSearchResult
 
 
 def search_web(query: str, top_k: int = 5) -> list[WebSearchResult]:
-    """Return mock web evidence unless a real provider is added later."""
+    """Legacy：返回 mock web evidence；cloud 主路径必须使用 providers.websearch。"""
 
     lowered = query.lower()
     results: list[WebSearchResult] = []
@@ -61,4 +61,3 @@ def search_web(query: str, top_k: int = 5) -> list[WebSearchResult]:
             )
         )
     return results[:top_k]
-

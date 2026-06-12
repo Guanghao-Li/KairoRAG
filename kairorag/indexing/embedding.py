@@ -1,4 +1,4 @@
-"""Local deterministic embedding provider."""
+"""Legacy / Deprecated：本地 hashing embedding，仅保留给离线 demo 和历史对照。"""
 
 from __future__ import annotations
 
@@ -11,13 +11,13 @@ TOKEN_RE = re.compile(r"[A-Za-z0-9_#+.-]+|[\u4e00-\u9fff]")
 
 
 def tokenize(text: str) -> list[str]:
-    """Tokenize text for keyword and hashing embeddings."""
+    """Legacy：为本地 keyword overlap 和 hashing embedding 分词。"""
 
     return [token.lower() for token in TOKEN_RE.findall(text or "")]
 
 
 class HashingEmbeddingProvider:
-    """A tiny local embedding provider with no model downloads."""
+    """Legacy / Deprecated：无模型下载的 hashing embedding，不再是 cloud 主路径。"""
 
     def __init__(self, dim: int = 128):
         self.dim = dim
@@ -34,9 +34,8 @@ class HashingEmbeddingProvider:
 
 
 def cosine_similarity(left: list[float], right: list[float]) -> float:
-    """Cosine for normalized or near-normalized vectors."""
+    """Legacy：本地向量 demo 的余弦相似度。"""
 
     if not left or not right:
         return 0.0
     return float(sum(a * b for a, b in zip(left, right)))
-
