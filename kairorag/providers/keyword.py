@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
+import json
 import re
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from pathlib import Path
 from typing import Any, Protocol
 
 from kairorag.providers.errors import KairoProviderError
 
 
 TOKEN_RE = re.compile(r"[A-Za-z0-9]+(?:[._+#-][A-Za-z0-9]+)*|[\u4e00-\u9fff]")
-SUPPORTED_FILTER_KEYS = {"archived", "verification_status", "source_type"}
+SUPPORTED_FILTER_KEYS = {"archived", "verification_status", "source_type", "company", "job_id"}
 
 
 @dataclass(frozen=True)
@@ -98,6 +100,31 @@ class BM25KeywordSearchProvider:
             )
         results.sort(key=lambda item: item.score, reverse=True)
         return results[:top_k]
+
+    def save_keyword_documents(self, path: str | Path) -> None:
+        """把 BM25 源文档保存为 JSON，重启后可重建内存索引。"""
+
+        output_path = Path(path)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = [asdict(document) for document in self.documents]
+        output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    def load_keyword_documents(self, path: str | Path) -> None:
+        """从 JSON 读取 BM25 源文档，并重新构建内存索引。"""
+
+        input_path = Path(path)
+        raw_documents = json.loads(input_path.read_text(encoding="utf-8"))
+        documents = [
+            KeywordDocument(
+                chunk_id=str(item["chunk_id"]),
+                doc_id=str(item["doc_id"]),
+                title=str(item.get("title", "")),
+                text=str(item.get("text", "")),
+                metadata=dict(item.get("metadata") or {}),
+            )
+            for item in raw_documents
+        ]
+        self.index(documents)
 
 
 def _tokenize(text: str) -> list[str]:

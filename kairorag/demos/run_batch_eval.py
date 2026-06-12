@@ -1,32 +1,23 @@
-"""Run batch KairoRAG evaluation."""
+"""Deprecated：旧离线批量评测入口已废弃。
+
+请使用 `kairo eval` 生成 cloud-native 离线评测报告和 dashboard。
+"""
 
 from __future__ import annotations
 
-import argparse
-import json
-from pathlib import Path
-
-from kairorag.config import RESULTS_DIR
-from kairorag.evaluation.evaluator import run_job_verification_eval, run_qa_eval
+import sys
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Run KairoRAG batch evaluation")
-    parser.add_argument("--eval-file", default="data/eval/qa_eval.json")
-    parser.add_argument("--output", default=str(RESULTS_DIR / "eval_report.json"))
-    parser.add_argument("--job-verification", action="store_true")
-    parser.add_argument("--mock-web", action="store_true")
-    parser.add_argument("--include-traces", action="store_true")
-    args = parser.parse_args()
-
-    if args.job_verification:
-        payload = run_job_verification_eval(args.eval_file, args.output)
-    else:
-        payload = run_qa_eval(args.eval_file, args.output, include_traces=args.include_traces)
-    print(json.dumps(payload["overall_metrics"], ensure_ascii=False, indent=2))
-    print(f"Report written to {Path(args.output)}")
+DEPRECATED_MESSAGE = "该入口已废弃。请使用 `kairo eval --suite all --fake-providers`。"
 
 
-if __name__ == "__main__":
-    main()
+def main(argv: list[str] | None = None) -> int:
+    """打印废弃提示并以退出码 2 结束。"""
 
+    _ = argv
+    print(DEPRECATED_MESSAGE)
+    return 2
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main(sys.argv[1:]))

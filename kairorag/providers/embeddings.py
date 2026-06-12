@@ -59,6 +59,11 @@ class OpenAIEmbeddingProvider:
                 list(getattr(response, "data", [])),
                 key=lambda item: getattr(item, "index", 0),
             )
+            if len(rows) != len(texts):
+                raise KairoProviderError(
+                    "OpenAI embedding 返回数量不匹配："
+                    f"expected={len(texts)}，actual={len(rows)}。"
+                )
             return [
                 EmbeddingResult(
                     text=text,
@@ -69,6 +74,8 @@ class OpenAIEmbeddingProvider:
                 for text, row in zip(texts, rows)
             ]
         except Exception as exc:
+            if isinstance(exc, KairoProviderError):
+                raise
             raise KairoProviderError(f"OpenAI embedding 调用失败：{exc}") from exc
 
     def embed_query(self, query: str) -> EmbeddingResult:

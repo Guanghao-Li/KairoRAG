@@ -14,9 +14,13 @@ dist/
 venv/
 .env
 .env.*
+!.env.example
 
 # Local outputs
 data/maintenance/
+data/freshness_audit.jsonl
+data/trace_events.jsonl
+data/run_trace.json
 
 # Personal files
 简历*.md

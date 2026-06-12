@@ -44,3 +44,22 @@ def test_bm25_keyword_provider_boosts_title_matches():
     results = provider.search("qdrant", top_k=2)
 
     assert results[0].chunk_id == "title-hit"
+
+
+def test_bm25_keyword_provider_saves_and_loads_documents(tmp_path):
+    path = tmp_path / "cloud_bm25_index.json"
+    provider = BM25KeywordSearchProvider()
+    provider.index(
+        [
+            KeywordDocument("c1", "d1", "Cloud RAG", "hybrid retrieval rrf", {"source_type": "note"}),
+            KeywordDocument("c2", "d2", "Other", "invoice workflow", {"source_type": "note"}),
+            KeywordDocument("c3", "d3", "Travel", "policy handbook", {"source_type": "note"}),
+        ]
+    )
+
+    provider.save_keyword_documents(path)
+    restored = BM25KeywordSearchProvider()
+    restored.load_keyword_documents(path)
+    results = restored.search("hybrid rrf", top_k=3)
+
+    assert results[0].chunk_id == "c1"

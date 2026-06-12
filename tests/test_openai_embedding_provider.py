@@ -4,6 +4,7 @@ import pytest
 from pydantic import SecretStr
 
 from kairorag.config import KairoCloudSettings
+from kairorag.providers.errors import KairoProviderError
 from kairorag.providers.embeddings import OpenAIEmbeddingProvider
 
 
@@ -17,14 +18,16 @@ def _settings():
 
 
 class FakeEmbeddings:
-    def __init__(self):
+    def __init__(self, extra_rows=0):
         self.payload = None
+        self.extra_rows = extra_rows
 
     def create(self, **payload):
         self.payload = payload
+        row_count = len(payload["input"]) + self.extra_rows
         data = [
             SimpleNamespace(index=index, embedding=[float(index), float(index + 1)])
-            for index, _text in enumerate(payload["input"])
+            for index in range(row_count)
         ]
         return SimpleNamespace(
             data=data,
@@ -34,8 +37,8 @@ class FakeEmbeddings:
 
 
 class FakeClient:
-    def __init__(self):
-        self.embeddings = FakeEmbeddings()
+    def __init__(self, extra_rows=0):
+        self.embeddings = FakeEmbeddings(extra_rows=extra_rows)
 
 
 def test_openai_embedding_provider_supports_multiple_texts():
@@ -64,3 +67,23 @@ def test_openai_embedding_provider_rejects_blank_text():
 
     with pytest.raises(ValueError):
         provider.embed_texts(["有效", "  "])
+
+
+def test_openai_embedding_provider_rejects_missing_rows():
+    provider = OpenAIEmbeddingProvider(_settings(), client=FakeClient(extra_rows=-1))
+
+    with pytest.raises(KairoProviderError) as exc_info:
+        provider.embed_texts(["第一段", "第二段"])
+
+    assert "expected=2" in str(exc_info.value)
+    assert "actual=1" in str(exc_info.value)
+
+
+def test_openai_embedding_provider_rejects_extra_rows():
+    provider = OpenAIEmbeddingProvider(_settings(), client=FakeClient(extra_rows=1))
+
+    with pytest.raises(KairoProviderError) as exc_info:
+        provider.embed_texts(["第一段", "第二段"])
+
+    assert "expected=2" in str(exc_info.value)
+    assert "actual=3" in str(exc_info.value)
