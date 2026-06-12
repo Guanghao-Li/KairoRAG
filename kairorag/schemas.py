@@ -168,6 +168,8 @@ class RAGAnswer(JsonMixin):
 
 @dataclass
 class WebSearchResult(JsonMixin):
+    """Legacy / Deprecated：旧维护模块使用的 mock web search 结果。"""
+
     title: str
     url: str
     snippet: str
@@ -228,4 +230,3 @@ class BudgetReport(JsonMixin):
     read_chunks: list[str]
     estimated_context_tokens: int
     dropped_chunks: list[str]
-

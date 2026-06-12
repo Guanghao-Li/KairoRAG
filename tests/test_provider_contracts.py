@@ -60,3 +60,17 @@ def test_cross_encoder_skeleton_requires_model_config():
         build_reranker_provider(_settings(reranker_provider="cross_encoder"))
 
     assert "CROSS_ENCODER_MODEL" in str(exc_info.value)
+
+
+def test_keyword_factory_rejects_unsupported_provider():
+    with pytest.raises(KairoProviderError) as exc_info:
+        build_keyword_search_provider(_settings(keyword_search_provider="local"))
+
+    assert "KEYWORD_SEARCH_PROVIDER" in str(exc_info.value)
+
+
+def test_reranker_factory_rejects_bm25_provider():
+    with pytest.raises(KairoProviderError) as exc_info:
+        build_reranker_provider(_settings(reranker_provider="bm25"))
+
+    assert "RERANKER_PROVIDER" in str(exc_info.value)
