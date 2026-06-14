@@ -67,6 +67,7 @@ def test_apply_freshness_update_dry_run_plan_success(tmp_path):
 
     assert output.ok is True
     assert output.result["applied"] is False
+    assert output.result["approval_decision"]["dry_run"] is True
     assert store.calls == []
     assert output.result["audit_log_path"]
 
@@ -78,7 +79,7 @@ def test_apply_freshness_update_fails_without_freshness_result(tmp_path):
     output = registry.execute(LLMToolCall("1", "apply_freshness_update", {"chunk_id": "chunk-1"}), state)
 
     assert output.ok is False
-    assert "尚无 freshness" in output.error
+    assert "freshness verification" in output.error
 
 
 def test_apply_freshness_update_unauthorized_apply_forces_dry_run(tmp_path):
@@ -98,7 +99,7 @@ def test_apply_freshness_update_unauthorized_apply_forces_dry_run(tmp_path):
     assert "guardrail" in output.result
 
 
-def test_apply_freshness_update_authorized_apply_writes(tmp_path):
+def test_apply_freshness_update_agent_initiated_still_forces_dry_run(tmp_path):
     store = FakeVectorStore()
     registry = _registry(tmp_path, authorized=True, store=store)
     state = AgentState(query="请写回并标记关闭")
@@ -110,11 +111,13 @@ def test_apply_freshness_update_authorized_apply_writes(tmp_path):
     )
 
     assert output.ok is True
-    assert output.result["applied"] is True
-    assert store.calls
+    assert output.result["applied"] is False
+    assert output.result["effective_dry_run"] is True
+    assert output.result["approval_decision"]["requires_confirmation"] is True
+    assert store.calls == []
 
 
-def test_apply_freshness_update_write_disabled_returns_error(tmp_path):
+def test_apply_freshness_update_write_disabled_is_not_reached_by_agent(tmp_path):
     store = FakeVectorStore()
     settings = _settings(tmp_path, qdrant_metadata_write_enabled=False)
     registry = _registry(tmp_path, authorized=True, settings=settings, store=store)
@@ -126,6 +129,6 @@ def test_apply_freshness_update_write_disabled_returns_error(tmp_path):
         state,
     )
 
-    assert output.ok is False
-    assert "未启用" in output.error
+    assert output.ok is True
+    assert output.result["effective_dry_run"] is True
     assert store.calls == []

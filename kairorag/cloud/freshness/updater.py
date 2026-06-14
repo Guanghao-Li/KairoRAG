@@ -1,8 +1,8 @@
-"""岗位 freshness metadata 的安全写回计划与可选执行。"""
+"""岗位 freshness metadata 的安全计划、审批与可选写回。"""
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -12,6 +12,7 @@ from kairorag.cloud.observability import TraceEvent, TraceLogger, now_iso, redac
 from kairorag.config import KairoCloudSettings
 from kairorag.providers.errors import KairoProviderError
 from kairorag.providers.vectorstores import VectorStoreProvider
+from kairorag.security import ApprovalDecision, ApprovalManager, ApprovalRequest
 
 
 @dataclass(frozen=True)
@@ -38,6 +39,7 @@ class FreshnessUpdateResult:
     plan: FreshnessUpdatePlan
     audit_log_path: str | None
     error: str | None = None
+    approval_decision: ApprovalDecision | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -47,7 +49,7 @@ class FreshnessUpdateResult:
 
 
 class CloudFreshnessUpdater:
-    """生成 freshness metadata patch，并在用户授权时安全写回 Qdrant。"""
+    """生成 freshness metadata patch，并在审批通过后安全写回 Qdrant。"""
 
     def __init__(self, settings: KairoCloudSettings, trace_logger: TraceLogger | None = None) -> None:
         self.settings = settings
@@ -65,25 +67,50 @@ class CloudFreshnessUpdater:
         *,
         vector_store: VectorStoreProvider,
         dry_run: bool = True,
+        user_confirmed: bool = False,
+        agent_initiated: bool = False,
+        approval_policy: str | None = None,
     ) -> FreshnessUpdateResult:
         plan = self._plan_update(result, dry_run=dry_run)
-        self._log_trace("freshness_update_planned", result, {"plan": plan.to_dict()})
-        audit_path = self._write_audit(result, plan, status="planned")
+        approval_decision = self._decide_approval(
+            result,
+            plan,
+            user_confirmed=user_confirmed,
+            agent_initiated=agent_initiated,
+            approval_policy=approval_policy,
+        )
+        if approval_decision.dry_run and not plan.dry_run:
+            plan = replace(plan, dry_run=True)
+
+        self._log_trace(
+            "freshness_update_planned",
+            result,
+            {"plan": plan.to_dict(), "approval_decision": approval_decision.to_dict()},
+        )
+        audit_path = self._write_audit(result, plan, status="planned", approval_decision=approval_decision)
 
         if not plan.should_update:
-            return FreshnessUpdateResult(applied=False, plan=plan, audit_log_path=audit_path)
-        if dry_run:
-            return FreshnessUpdateResult(applied=False, plan=plan, audit_log_path=audit_path)
+            return FreshnessUpdateResult(False, plan, audit_path, approval_decision=approval_decision)
+        if not approval_decision.allowed:
+            return FreshnessUpdateResult(
+                False,
+                plan,
+                audit_path,
+                error=approval_decision.reason,
+                approval_decision=approval_decision,
+            )
+        if plan.dry_run:
+            return FreshnessUpdateResult(False, plan, audit_path, approval_decision=approval_decision)
         if not self.settings.qdrant_metadata_write_enabled:
             error = "Qdrant metadata 写回未启用：请设置 QDRANT_METADATA_WRITE_ENABLED=true 后再 apply。"
-            self._write_audit(result, plan, status="error", error=error)
+            self._write_audit(result, plan, status="error", error=error, approval_decision=approval_decision)
             self._log_trace("provider_error", result, {"error": error})
-            return FreshnessUpdateResult(applied=False, plan=plan, audit_log_path=audit_path, error=error)
+            return FreshnessUpdateResult(False, plan, audit_path, error=error, approval_decision=approval_decision)
         if not plan.chunk_id:
             error = "无法写回 freshness metadata：缺少 chunk_id。"
-            self._write_audit(result, plan, status="error", error=error)
+            self._write_audit(result, plan, status="error", error=error, approval_decision=approval_decision)
             self._log_trace("provider_error", result, {"error": error})
-            return FreshnessUpdateResult(applied=False, plan=plan, audit_log_path=audit_path, error=error)
+            return FreshnessUpdateResult(False, plan, audit_path, error=error, approval_decision=approval_decision)
 
         try:
             vector_store.update_payload(
@@ -93,13 +120,17 @@ class CloudFreshnessUpdater:
             )
         except Exception as exc:
             error = str(exc) if isinstance(exc, KairoProviderError) else "Qdrant metadata 写回失败。"
-            self._write_audit(result, plan, status="error", error=error)
+            self._write_audit(result, plan, status="error", error=error, approval_decision=approval_decision)
             self._log_trace("provider_error", result, {"error": error})
-            return FreshnessUpdateResult(applied=False, plan=plan, audit_log_path=audit_path, error=error)
+            return FreshnessUpdateResult(False, plan, audit_path, error=error, approval_decision=approval_decision)
 
-        self._write_audit(result, plan, status="applied")
-        self._log_trace("freshness_update_applied", result, {"plan": plan.to_dict(), "applied": True})
-        return FreshnessUpdateResult(applied=True, plan=plan, audit_log_path=audit_path)
+        self._write_audit(result, plan, status="applied", approval_decision=approval_decision)
+        self._log_trace(
+            "freshness_update_applied",
+            result,
+            {"plan": plan.to_dict(), "applied": True, "approval_decision": approval_decision.to_dict()},
+        )
+        return FreshnessUpdateResult(True, plan, audit_path, approval_decision=approval_decision)
 
     def _plan_update(self, result: JobFreshnessResult, *, dry_run: bool) -> FreshnessUpdatePlan:
         base_patch = {
@@ -186,6 +217,7 @@ class CloudFreshnessUpdater:
         *,
         status: str,
         error: str | None = None,
+        approval_decision: ApprovalDecision | None = None,
     ) -> str:
         path = Path(self.settings.freshness_audit_log_path)
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -200,6 +232,8 @@ class CloudFreshnessUpdater:
             "evidence_count": len(result.evidence),
             "reason": result.reason,
         }
+        if approval_decision:
+            payload["approval_decision"] = approval_decision.to_dict()
         if error:
             payload["error"] = error
         with path.open("a", encoding="utf-8") as handle:
@@ -221,6 +255,27 @@ class CloudFreshnessUpdater:
                 },
             )
         )
+
+    def _decide_approval(
+        self,
+        result: JobFreshnessResult,
+        plan: FreshnessUpdatePlan,
+        *,
+        user_confirmed: bool,
+        agent_initiated: bool,
+        approval_policy: str | None,
+    ) -> ApprovalDecision:
+        manager = ApprovalManager(approval_policy or self.settings.approval_policy)
+        action = plan.action if plan.action in {"mark_closed", "update_url", "mark_duplicate"} else "apply_freshness_update"
+        request = ApprovalRequest(
+            action=action,  # type: ignore[arg-type]
+            resource_id=plan.chunk_id or plan.job_id,
+            summary=f"对岗位 freshness metadata 执行 {plan.action}",
+            risk_level="high" if plan.requires_reindex or plan.action in {"mark_closed", "update_url"} else "medium",
+            metadata_patch=plan.metadata_patch,
+            reason=result.reason,
+        )
+        return manager.decide(request, user_confirmed=user_confirmed, agent_initiated=agent_initiated)
 
 
 def _plan(

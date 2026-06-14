@@ -235,6 +235,8 @@ class ToolRegistry:
             result,
             vector_store=self.vector_store,
             dry_run=forced_dry_run,
+            user_confirmed=False,
+            agent_initiated=True,
         )
         state.metrics["freshness_update_count"] = int(state.metrics.get("freshness_update_count", 0)) + 1
         state.metrics["freshness_update_applied_count"] = int(state.metrics.get("freshness_update_applied_count", 0)) + int(
@@ -251,13 +253,19 @@ class ToolRegistry:
                 "applied": update_result.applied,
                 "audit_log_path": update_result.audit_log_path,
                 "error": update_result.error,
+                "approval_decision": update_result.approval_decision.to_dict()
+                if update_result.approval_decision
+                else None,
             },
         )
         output = {
             "plan": update_result.plan.to_dict(),
             "applied": update_result.applied,
             "audit_log_path": update_result.audit_log_path,
-            "effective_dry_run": forced_dry_run,
+            "effective_dry_run": update_result.plan.dry_run,
+            "approval_decision": update_result.approval_decision.to_dict()
+            if update_result.approval_decision
+            else None,
         }
         if not authorized and requested_dry_run is False:
             output["guardrail"] = "用户未明确授权写回，已强制 dry-run。"

@@ -68,6 +68,11 @@ class KairoCloudSettings(BaseSettings):
     rerank_timeout_seconds: int = Field(default=30, validation_alias="RERANK_TIMEOUT_SECONDS")
     qdrant_metadata_write_enabled: bool = Field(default=False, validation_alias="QDRANT_METADATA_WRITE_ENABLED")
     qdrant_metadata_write_dry_run: bool = Field(default=True, validation_alias="QDRANT_METADATA_WRITE_DRY_RUN")
+    approval_policy: str = Field(default="require_confirmation", validation_alias="APPROVAL_POLICY")
+    require_human_approval_for_writeback: bool = Field(
+        default=True,
+        validation_alias="REQUIRE_HUMAN_APPROVAL_FOR_WRITEBACK",
+    )
     qdrant_metadata_allowed_fields: list[str] = Field(
         default_factory=lambda: [
             "verification_status",
@@ -115,6 +120,7 @@ class KairoCloudSettings(BaseSettings):
         "web_search_provider",
         "keyword_search_provider",
         "reranker_provider",
+        "approval_policy",
         mode="before",
     )
     @classmethod
@@ -162,6 +168,8 @@ def validate_cloud_runtime(settings: KairoCloudSettings | None = None) -> KairoC
     supported_rerankers = {"base_score", "cohere", "jina", "voyage", "openai_listwise", "cross_encoder"}
     if settings.reranker_provider not in supported_rerankers:
         unsupported.append(f"RERANKER_PROVIDER={settings.reranker_provider}")
+    if settings.approval_policy not in {"deny", "dry_run", "require_confirmation", "allow"}:
+        unsupported.append(f"APPROVAL_POLICY={settings.approval_policy}")
 
     if settings.llm_provider == "openai" and not _has_secret(settings.openai_api_key):
         missing.append("OPENAI_API_KEY")

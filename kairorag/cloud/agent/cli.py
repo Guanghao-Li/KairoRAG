@@ -24,7 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--company", default=None, help="按 company 过滤。")
     parser.add_argument("--verify-freshness", action="store_true", help="要求启用岗位 freshness verification。")
     parser.add_argument("--show-verification", action="store_true", help="打印岗位 verification evidence 摘要。")
-    parser.add_argument("--web-provider", choices=["tavily", "serpapi", "bing"], default=None, help="覆盖 Web Search provider。")
+    parser.add_argument("--web-provider", choices=["tavily", "serpapi", "bing"], default=None, help="覆盖 Web Search。")
     parser.add_argument(
         "--reranker",
         choices=["base_score", "cohere", "jina", "voyage", "openai_listwise", "cross_encoder"],
@@ -32,8 +32,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="覆盖 RERANKER_PROVIDER。",
     )
     parser.add_argument("--rerank-top-k", type=int, default=None, help="覆盖 RERANK_TOP_K。")
-    parser.add_argument("--apply-freshness-update", action="store_true", help="明确授权 freshness metadata 写回。")
-    parser.add_argument("--dry-run", choices=["true", "false"], default=None, help="是否 dry-run；默认 true。")
+    parser.add_argument("--apply-freshness-update", action="store_true", help="请求 freshness metadata 写回。")
+    parser.add_argument("--dry-run", choices=["true", "false"], default=None, help="是否 dry-run，默认 true。")
+    parser.add_argument("--yes", action="store_true", help="确认执行真实 destructive apply。")
+    parser.add_argument(
+        "--approval-policy",
+        choices=["deny", "dry_run", "require_confirmation", "allow"],
+        default=None,
+        help="覆盖审批策略。",
+    )
     parser.add_argument("--audit-log", default=None, help="覆盖 freshness audit JSONL 路径。")
     parser.add_argument("--trace-output", default=None, help="把本次 trace 保存为 JSON 文件。")
     return parser
@@ -50,12 +57,15 @@ def main(argv: list[str] | None = None) -> int:
         settings.rerank_top_k = args.rerank_top_k
     if args.audit_log:
         settings.freshness_audit_log_path = args.audit_log
+    if args.approval_policy:
+        settings.approval_policy = args.approval_policy
     if args.dry_run is not None:
         settings.qdrant_metadata_write_dry_run = _parse_bool(args.dry_run)
     if args.verify_freshness and not settings.job_freshness_enabled:
         print("错误：JOB_FRESHNESS_ENABLED=false，无法执行 --verify-freshness。")
         return 2
-    freshness_apply_authorized = args.apply_freshness_update or settings.qdrant_metadata_write_dry_run is False
+
+    freshness_apply_authorized = bool(args.apply_freshness_update and args.yes)
     runtime = _build_agent_runtime(settings, freshness_apply_authorized=freshness_apply_authorized)
     if args.max_tool_calls is not None:
         runtime.settings.max_tool_calls = args.max_tool_calls

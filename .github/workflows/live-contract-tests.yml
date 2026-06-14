@@ -1,0 +1,41 @@
+name: Live Provider Contract Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: "要运行的 provider：all/openai/qdrant/tavily/serpapi/bing/cohere/jina/voyage/openai_listwise"
+        required: false
+        default: "all"
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    env:
+      RUN_LIVE_PROVIDER_TESTS: "1"
+      LIVE_PROVIDER: ${{ inputs.provider }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      QDRANT_URL: ${{ secrets.QDRANT_URL }}
+      QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+      TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+      SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+      BING_API_KEY: ${{ secrets.BING_API_KEY }}
+      COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+      JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+      VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,web,live]"
+
+      - name: Run live contract tests
+        run: python -m pytest tests/live -m live -q

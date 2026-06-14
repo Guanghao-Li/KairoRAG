@@ -186,6 +186,7 @@ def run_eval_dashboard(
     output_format: str = "all",
     fake_providers: bool = True,
     live: bool = False,
+    tag: str | None = None,
 ) -> dict[str, Any]:
     """运行 eval 并按需写出 JSON、Markdown、HTML dashboard。"""
 
@@ -193,6 +194,8 @@ def run_eval_dashboard(
         raise ValueError("live eval 尚未接入真实 provider；当前阶段请使用 fake providers。")
     runner = EvalRunner()
     payload = runner.run(suite=suite, live=False)
+    if tag:
+        payload["tag"] = tag
     output_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
     if output_format in {"json", "all"}:
