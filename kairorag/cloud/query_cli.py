@@ -22,10 +22,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--company", default=None, help="按 company 过滤。")
     parser.add_argument("--include-trace", action="store_true", help="打印完整检索 trace。")
     parser.add_argument("--max-tool-calls", type=int, default=None, help="Agent 最大工具调用次数。")
-    parser.add_argument("--baseline", action="store_true", help="使用第 2 阶段固定 cloud RAG 链路。")
+    parser.add_argument("--baseline", action="store_true", help="使用固定 cloud RAG 链路。")
     parser.add_argument("--verify-freshness", action="store_true", help="要求启用岗位 freshness verification。")
     parser.add_argument("--show-verification", action="store_true", help="打印岗位 verification evidence 摘要。")
-    parser.add_argument("--web-provider", choices=["tavily", "serpapi", "bing"], default=None, help="覆盖 Web Search provider。")
+    parser.add_argument("--web-provider", choices=["tavily", "serpapi", "bing"], default=None, help="覆盖 Web Search。")
     parser.add_argument(
         "--reranker",
         choices=["base_score", "cohere", "jina", "voyage", "openai_listwise", "cross_encoder"],
@@ -33,8 +33,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="覆盖 RERANKER_PROVIDER。",
     )
     parser.add_argument("--rerank-top-k", type=int, default=None, help="覆盖 RERANK_TOP_K。")
-    parser.add_argument("--apply-freshness-update", action="store_true", help="明确授权 freshness metadata 写回。")
-    parser.add_argument("--dry-run", choices=["true", "false"], default=None, help="是否 dry-run；默认 true。")
+    parser.add_argument("--apply-freshness-update", action="store_true", help="请求 freshness metadata 写回。")
+    parser.add_argument("--dry-run", choices=["true", "false"], default=None, help="是否 dry-run，默认 true。")
+    parser.add_argument("--yes", action="store_true", help="确认执行真实 destructive apply。")
+    parser.add_argument(
+        "--approval-policy",
+        choices=["deny", "dry_run", "require_confirmation", "allow"],
+        default=None,
+        help="覆盖审批策略。",
+    )
     parser.add_argument("--audit-log", default=None, help="覆盖 freshness audit JSONL 路径。")
     parser.add_argument("--trace-output", default=None, help="把本次 trace 保存为 JSON 文件。")
     return parser
@@ -51,15 +58,18 @@ def main(argv: list[str] | None = None) -> int:
         settings.rerank_top_k = args.rerank_top_k
     if args.audit_log:
         settings.freshness_audit_log_path = args.audit_log
+    if args.approval_policy:
+        settings.approval_policy = args.approval_policy
     if args.dry_run is not None:
         settings.qdrant_metadata_write_dry_run = _parse_bool(args.dry_run)
     if args.verify_freshness and not settings.job_freshness_enabled:
         print("错误：JOB_FRESHNESS_ENABLED=false，无法执行 --verify-freshness。")
         return 2
     if args.baseline and args.verify_freshness:
-        print("错误：--baseline 是固定 RAG 链路，不执行实时 freshness verification；请使用默认 agent 模式。")
+        print("错误：baseline 是固定 RAG 链路，不执行实时 freshness verification；请使用默认 agent 模式。")
         return 2
-    freshness_apply_authorized = args.apply_freshness_update or settings.qdrant_metadata_write_dry_run is False
+
+    freshness_apply_authorized = bool(args.apply_freshness_update and args.yes)
     runtime = (
         build_cloud_query_runtime(settings)
         if args.baseline

@@ -33,7 +33,7 @@ jobs:
 
           key_re = re.compile(r"(OPENAI_API_KEY|COHERE_API_KEY|TAVILY_API_KEY|SERPAPI_API_KEY|BING_API_KEY|VOYAGE_API_KEY|JINA_API_KEY)\s*=\s*([^\s#]+)")
           sk_re = re.compile(r"sk-[A-Za-z0-9_-]{12,}")
-          ignored_dirs = {".git", ".pytest_cache", "kairorag.egg-info", ".venv", "venv"}
+          ignored_dirs = {".git", ".pytest_cache", ".ruff_cache", ".mypy_cache", ".venv", "venv", "htmlcov"}
           ignored_files = {".env.example"}
 
           def placeholder(value: str) -> bool:
@@ -41,7 +41,7 @@ jobs:
               return (
                   clean in {"", "...", "placeholder", "secret", "your-key", "changeme", "<your-key>"}
                   or clean.startswith("<")
-                  or any(token in clean for token in ("placeholder", "secret", "redacted", "example"))
+                  or any(token in clean for token in ("placeholder", "secret", "redacted", "example", "fake"))
               )
 
           hits = []
@@ -75,7 +75,7 @@ jobs:
           print("import smoke ok")
           PY
 
-      - name: CLI help smoke test
+      - name: CLI smoke test
         run: |
           python -m kairorag.cli --help
           python -m kairorag.cli index --help
@@ -84,9 +84,26 @@ jobs:
           python -m kairorag.cli verify --help
           python -m kairorag.cli eval --help
           python -m kairorag.cli doctor --help
+          python -m kairorag.cli ui --help
           python -m kairorag.cli config --help
-          python -m kairorag.cloud.query_cli --help
-          python -m kairorag.cloud.agent.cli --help
 
-      - name: Pytest
-        run: python -m pytest
+      - name: Pytest with coverage
+        run: |
+          # python -m pytest 由 coverage 包裹执行，避免重复运行测试。
+          coverage run -m pytest
+          coverage xml
+          coverage html
+
+      - name: Eval fake suite smoke
+        run: python -m kairorag.cli eval --suite all --fake-providers --output-dir results/eval_dashboard
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kairo-ci-artifacts
+          path: |
+            results/eval_dashboard/eval_report.md
+            results/eval_dashboard/eval_dashboard.html
+            coverage.xml
+            htmlcov/

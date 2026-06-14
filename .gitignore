@@ -1,26 +1,45 @@
 __pycache__/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
 *.pyc
 *.pyo
 *.pyd
 
-# Packaging artifacts
+# 打包产物
 *.egg-info/
 build/
 dist/
 
-# Local environments
+# 本地环境
 .venv/
 venv/
 .env
 .env.*
 !.env.example
 
-# Local outputs
+# 本地运行输出和审计日志
+data/*.jsonl
+data/*trace*
+data/*audit*
+data/eval_outputs/
+eval_outputs/
+results/eval_dashboard/
+htmlcov/
+.coverage
+coverage.xml
+
+# 临时索引和旧 pickle 产物
+*.pkl
+keyword_index.pkl
+vector_store.pkl
+
+# 本地维护输出
 data/maintenance/
 data/freshness_audit.jsonl
 data/trace_events.jsonl
 data/run_trace.json
 
-# Personal files
-简历*.md
+# 个人文件
+简历内容.md

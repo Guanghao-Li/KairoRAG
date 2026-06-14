@@ -1,22 +1,71 @@
 services:
-  app:
-    build: .
-    env_file:
-      - .env
-    depends_on:
-      - qdrant
-    command: ["kairo", "doctor"]
-    volumes:
-      - ./data:/app/data
-      - ./results:/app/results
-
   qdrant:
     image: qdrant/qdrant:v1.9.5
+    profiles: ["dev", "eval", "app"]
     ports:
       - "6333:6333"
       - "6334:6334"
     volumes:
       - qdrant_storage:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    profiles: ["app"]
+    env_file:
+      - .env
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    command: ["kairo", "doctor", "--repo"]
+    volumes:
+      - ./data:/app/data
+      - ./results:/app/results
+    healthcheck:
+      test: ["CMD", "kairo", "doctor", "--repo"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ui:
+    build: .
+    profiles: ["app"]
+    env_file:
+      - .env
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    command: ["kairo", "ui", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./results:/app/results
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3).read()",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  eval:
+    build: .
+    profiles: ["eval"]
+    env_file:
+      - .env
+    command: ["kairo", "eval", "--suite", "all", "--fake-providers", "--output-dir", "results/eval_dashboard"]
+    volumes:
+      - ./data:/app/data
+      - ./results:/app/results
 
 volumes:
   qdrant_storage:

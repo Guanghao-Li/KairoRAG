@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,7 @@ WEB_PROVIDER_CHOICES = ["tavily", "serpapi", "bing"]
 CHECK_CHOICES = ["qdrant", "openai", "websearch", "reranker", "all"]
 SUITE_CHOICES = ["retrieval", "groundedness", "agent", "freshness", "reranker", "writeback", "all"]
 FORMAT_CHOICES = ["json", "markdown", "html", "all"]
+APPROVAL_POLICY_CHOICES = ["deny", "dry_run", "require_confirmation", "allow"]
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -57,23 +59,35 @@ def build_parser() -> argparse.ArgumentParser:
     verify_parser.add_argument("--original-url", default=None, help="原始岗位 URL。")
     verify_parser.add_argument("--query", default=None, help="用于验证的搜索 query。")
     verify_parser.add_argument("--show-evidence", action="store_true", help="打印 evidence 明细。")
-    verify_parser.add_argument("--apply", action="store_true", help="授权执行 metadata 写回。")
-    verify_parser.add_argument("--dry-run", action="store_true", help="强制 dry-run；默认不真实写回。")
+    verify_parser.add_argument("--apply", action="store_true", help="请求执行 metadata 写回。")
+    verify_parser.add_argument("--dry-run", action="store_true", help="强制 dry-run，默认不真实写回。")
+    verify_parser.add_argument("--yes", action="store_true", help="确认执行真实 destructive apply。")
+    verify_parser.add_argument("--approval-policy", choices=APPROVAL_POLICY_CHOICES, default=None, help="覆盖审批策略。")
     verify_parser.set_defaults(handler=_run_verify)
 
-    eval_parser = subparsers.add_parser("eval", help="运行离线 eval dashboard。")
+    eval_parser = subparsers.add_parser("eval", help="运行离线 eval dashboard 或比较两次结果。")
     eval_parser.add_argument("--suite", choices=SUITE_CHOICES, default="all", help="选择 eval suite。")
     eval_parser.add_argument("--output-dir", default="results/eval_dashboard", help="报告输出目录。")
     eval_parser.add_argument("--format", choices=FORMAT_CHOICES, default="all", help="报告格式。")
-    eval_parser.add_argument("--fake-providers", action="store_true", help="使用 fake providers；默认开启。")
-    eval_parser.add_argument("--live", action="store_true", help="允许 live eval；默认不调用外部服务。")
+    eval_parser.add_argument("--fake-providers", action="store_true", help="使用 fake providers，默认开启。")
+    eval_parser.add_argument("--live", action="store_true", help="允许 live eval，默认不调用外部服务。")
+    eval_parser.add_argument("--compare", nargs=2, metavar=("BASELINE", "CURRENT"), help="比较两次 eval JSON。")
+    eval_parser.add_argument("--tag", default=None, help="为本次 eval 或 comparison 附加标签。")
     eval_parser.set_defaults(handler=_run_eval)
 
-    doctor_parser = subparsers.add_parser("doctor", help="检查环境和依赖配置。")
+    doctor_parser = subparsers.add_parser("doctor", help="检查环境、依赖配置或发布卫生。")
     doctor_parser.add_argument("--live", action="store_true", help="允许轻量 live healthcheck。")
     doctor_parser.add_argument("--json", action="store_true", help="输出 JSON 报告。")
     doctor_parser.add_argument("--check", choices=CHECK_CHOICES, default="all", help="选择检查项。")
+    doctor_parser.add_argument("--repo", action="store_true", help="执行本地仓库卫生检查，不调用外部服务。")
+    doctor_parser.add_argument("--release", action="store_true", help="执行发布前检查清单和仓库卫生检查。")
+    doctor_parser.add_argument("--run-checks", action="store_true", help="在 --release 下实际运行 pytest 和 ruff。")
     doctor_parser.set_defaults(handler=_run_doctor)
+
+    ui_parser = subparsers.add_parser("ui", help="启动本地 UI dashboard。")
+    ui_parser.add_argument("--host", default="127.0.0.1", help="监听地址，默认仅本机。")
+    ui_parser.add_argument("--port", type=int, default=8000, help="监听端口。")
+    ui_parser.set_defaults(handler=_run_ui)
 
     config_parser = subparsers.add_parser("config", help="打印脱敏配置摘要。")
     config_parser.add_argument("--json", action="store_true", help="输出 JSON。")
@@ -107,8 +121,10 @@ def _add_query_like_arguments(parser: argparse.ArgumentParser, *, include_baseli
     parser.add_argument("--rerank-top-k", type=int, default=None, help="覆盖 RERANK_TOP_K。")
     parser.add_argument("--verify-freshness", action="store_true", help="要求启用岗位 freshness verification。")
     parser.add_argument("--show-verification", action="store_true", help="打印岗位 verification evidence 摘要。")
-    parser.add_argument("--apply-freshness-update", action="store_true", help="明确授权 freshness metadata 写回。")
-    parser.add_argument("--dry-run", choices=["true", "false"], default=None, help="是否 dry-run；默认 true。")
+    parser.add_argument("--apply-freshness-update", action="store_true", help="请求 freshness metadata 写回。")
+    parser.add_argument("--dry-run", choices=["true", "false"], default=None, help="是否 dry-run，默认 true。")
+    parser.add_argument("--yes", action="store_true", help="确认执行真实 destructive apply。")
+    parser.add_argument("--approval-policy", choices=APPROVAL_POLICY_CHOICES, default=None, help="覆盖审批策略。")
     parser.add_argument("--web-provider", choices=WEB_PROVIDER_CHOICES, default=None, help="覆盖 Web Search provider。")
     parser.add_argument("--audit-log", default=None, help="覆盖 freshness audit JSONL 路径。")
 
@@ -133,6 +149,8 @@ def _run_query(args: argparse.Namespace) -> int:
             "show_verification",
             "apply_freshness_update",
             "dry_run",
+            "yes",
+            "approval_policy",
             "web_provider",
             "audit_log",
         ],
@@ -155,6 +173,8 @@ def _run_agent(args: argparse.Namespace) -> int:
             "show_verification",
             "apply_freshness_update",
             "dry_run",
+            "yes",
+            "approval_policy",
             "web_provider",
             "audit_log",
             "max_tool_calls",
@@ -165,6 +185,8 @@ def _run_agent(args: argparse.Namespace) -> int:
 
 def _run_verify(args: argparse.Namespace) -> int:
     settings = KairoCloudSettings()
+    if args.approval_policy:
+        settings.approval_policy = args.approval_policy
     provider = build_web_search_provider(settings)
     verifier = CloudJobFreshnessVerifier(settings, provider)
     result = verifier.verify_by_query(
@@ -186,13 +208,39 @@ def _run_verify(args: argparse.Namespace) -> int:
 
         runtime = build_cloud_runtime(settings)
         updater = CloudFreshnessUpdater(settings)
-        update = updater.apply_update(result, vector_store=runtime.vector_store, dry_run=args.dry_run or not args.apply)
+        update = updater.apply_update(
+            result,
+            vector_store=runtime.vector_store,
+            dry_run=args.dry_run or not args.apply,
+            user_confirmed=args.yes,
+            agent_initiated=False,
+            approval_policy=args.approval_policy,
+        )
         print("写回结果：")
         print(json.dumps(_jsonable(update), ensure_ascii=False, indent=2))
     return 0
 
 
 def _run_eval(args: argparse.Namespace) -> int:
+    if args.compare:
+        from kairorag.eval.compare import (
+            compare_eval_results,
+            write_comparison_html,
+            write_comparison_markdown,
+            write_trend_json,
+        )
+
+        output_dir = Path(args.output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        comparison = compare_eval_results(args.compare[0], args.compare[1])
+        md_path = write_comparison_markdown(comparison, output_dir / "eval_comparison.md")
+        html_path = write_comparison_html(comparison, output_dir / "eval_comparison.html")
+        trend_path = write_trend_json(comparison, output_dir / "trend.json", tag=args.tag)
+        print("Eval comparison 已生成：")
+        for path in (md_path, html_path, trend_path):
+            print(f"- {path}")
+        return 0
+
     from kairorag.eval.runner import run_eval_dashboard
 
     result = run_eval_dashboard(
@@ -201,6 +249,7 @@ def _run_eval(args: argparse.Namespace) -> int:
         output_format=args.format,
         fake_providers=True if not args.live else args.fake_providers,
         live=args.live,
+        tag=args.tag,
     )
     print("Eval dashboard 已生成：")
     for path in result["written_files"]:
@@ -209,6 +258,21 @@ def _run_eval(args: argparse.Namespace) -> int:
 
 
 def _run_doctor(args: argparse.Namespace) -> int:
+    if args.repo or args.release:
+        from kairorag.release import RepoHygieneChecker, build_release_checklist
+
+        report = RepoHygieneChecker(Path.cwd()).run()
+        if args.json:
+            print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
+        else:
+            if args.release:
+                print("KairoRAG 发布前检查")
+                print(build_release_checklist())
+            print(_format_repo_hygiene_report(report))
+            if args.release and args.run_checks:
+                return _run_release_commands() or (0 if report.ok else 1)
+        return 0 if report.ok else 1
+
     doctor = CloudDoctor(KairoCloudSettings())
     report = doctor.run(live=args.live, checks=[args.check])
     if args.json:
@@ -216,6 +280,15 @@ def _run_doctor(args: argparse.Namespace) -> int:
     else:
         print(format_doctor_report(report))
     return 0 if report.ok else 1
+
+
+def _run_ui(args: argparse.Namespace) -> int:
+    from kairorag.ui.app import serve_dashboard
+
+    if args.host == "0.0.0.0":
+        print("安全提醒：UI dashboard 没有内置身份认证，请不要直接暴露到公网。")
+    serve_dashboard(host=args.host, port=args.port)
+    return 0
 
 
 def _run_config(args: argparse.Namespace) -> int:
@@ -226,6 +299,30 @@ def _run_config(args: argparse.Namespace) -> int:
         print("KairoRAG 配置摘要：")
         for key, value in summary.items():
             print(f"- {key}: {value}")
+    return 0
+
+
+def _format_repo_hygiene_report(report: Any) -> str:
+    lines = ["KairoRAG Repo Hygiene 报告", f"整体状态：{'通过' if report.ok else '失败'}"]
+    if not report.issues:
+        lines.append("- 未发现仓库卫生问题。")
+        return "\n".join(lines)
+    for issue in report.issues:
+        path = f" ({issue.path})" if issue.path else ""
+        suggestion = f" 建议：{issue.suggestion}" if issue.suggestion else ""
+        lines.append(f"- [{issue.severity}] {issue.code}{path}：{issue.message}{suggestion}")
+    return "\n".join(lines)
+
+
+def _run_release_commands() -> int:
+    commands = [
+        ["python", "-m", "ruff", "check", "."],
+        ["python", "-m", "pytest"],
+    ]
+    for command in commands:
+        completed = subprocess.run(command, check=False)
+        if completed.returncode != 0:
+            return completed.returncode
     return 0
 
 

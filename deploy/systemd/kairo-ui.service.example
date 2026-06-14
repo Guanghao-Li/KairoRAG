@@ -1,0 +1,14 @@
+[Unit]
+Description=KairoRAG local UI dashboard
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/kairorag
+EnvironmentFile=/opt/kairorag/.env
+ExecStart=/opt/kairorag/.venv/bin/kairo ui --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

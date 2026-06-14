@@ -57,11 +57,16 @@ def test_freshness_update_dry_run_does_not_write_qdrant(tmp_path):
     assert result.audit_log_path
 
 
-def test_freshness_update_apply_writes_qdrant_when_enabled(tmp_path):
+def test_freshness_update_apply_writes_qdrant_when_enabled_and_confirmed(tmp_path):
     store = FakeVectorStore()
     updater = CloudFreshnessUpdater(_settings(tmp_path, qdrant_metadata_write_enabled=True))
 
-    result = updater.apply_update(_result("closed", "mark_closed"), vector_store=store, dry_run=False)
+    result = updater.apply_update(
+        _result("closed", "mark_closed"),
+        vector_store=store,
+        dry_run=False,
+        user_confirmed=True,
+    )
 
     assert result.applied is True
     assert store.calls[0][0] == ["chunk-1"]
@@ -69,18 +74,23 @@ def test_freshness_update_apply_writes_qdrant_when_enabled(tmp_path):
     assert store.calls[0][1]["archived"] is True
 
 
-def test_freshness_update_write_disabled_returns_error(tmp_path):
+def test_freshness_update_write_disabled_returns_error_after_confirmation(tmp_path):
     store = FakeVectorStore()
     updater = CloudFreshnessUpdater(_settings(tmp_path, qdrant_metadata_write_enabled=False))
 
-    result = updater.apply_update(_result("closed", "mark_closed"), vector_store=store, dry_run=False)
+    result = updater.apply_update(
+        _result("closed", "mark_closed"),
+        vector_store=store,
+        dry_run=False,
+        user_confirmed=True,
+    )
 
     assert result.applied is False
     assert "未启用" in result.error
     assert store.calls == []
 
 
-def test_freshness_update_audit_jsonl_redacts_secret(tmp_path):
+def test_freshness_update_audit_jsonl_redacts_secret_and_records_approval(tmp_path):
     updater = CloudFreshnessUpdater(_settings(tmp_path))
 
     result = updater.apply_update(_result("active", "keep_active"), vector_store=FakeVectorStore())
@@ -89,6 +99,7 @@ def test_freshness_update_audit_jsonl_redacts_secret(tmp_path):
     assert lines
     assert "sk-secret-value" not in json.dumps(lines, ensure_ascii=False)
     assert lines[0]["action"] == "keep_active"
+    assert "approval_decision" in lines[0]
 
 
 def test_freshness_update_status_patches(tmp_path):
